@@ -7,11 +7,11 @@ import {
     Diagram, ConnectorConstraints, Node, TextStyle, TextStyleModel, SelectorConstraints, TextAlign, HorizontalAlignment, VerticalAlignment, Connector, ShapeAnnotationModel
 } from '@syncfusion/ej2-diagrams';
 import { SelectorViewModel } from './selector';
-import { Dialog } from '@syncfusion/ej2-vue-popups';
+import { Dialog, DialogComponent } from '@syncfusion/ej2-vue-popups';
 import { MindMapUtilityMethods, MindMap } from './mindmap';
 import { OrgChartUtilityMethods, OrgChartData } from './orgchart';
 import { Ajax } from '@syncfusion/ej2-base';
-import { Toolbar, ContextMenu, MenuItemModel } from '@syncfusion/ej2-vue-navigations';
+import { Toolbar, ContextMenu, MenuItemModel, ToolbarComponent } from '@syncfusion/ej2-vue-navigations';
 import { PageCreation } from './pages';
 import { CommonKeyboardCommands } from './commoncommands';
 
@@ -24,8 +24,8 @@ export class PaperSize {
 export class UtilityMethods {
 
     public page: PageCreation | undefined;
-    public tempDialog: Dialog | undefined;
-    public toolbarEditor: Toolbar | undefined;
+    public tempDialog: DialogComponent | undefined;
+    public toolbarEditor: ToolbarComponent | undefined;
 
     public bindNodeProperties(node: NodeModel, selectedItem: SelectorViewModel): void {
         selectedItem.preventPropertyChange = true;
@@ -245,6 +245,7 @@ export class UtilityMethods {
     }
 
     public getDefaultDiagramTemplates1(selectedItem: SelectorViewModel, tempCount?: number, backgroundColor?: string, parentId?: string): void {
+        
         tempCount = tempCount ? tempCount : 4;
         backgroundColor = backgroundColor ? backgroundColor : 'red';
         parentId = parentId ? parentId : 'Flow Chart';
@@ -265,12 +266,11 @@ export class UtilityMethods {
 
         let diagramTemplatesDiv: HTMLDivElement = parentDiv.getElementsByClassName('diagramTemplates')[0] as HTMLDivElement;
         diagramTemplatesDiv.appendChild(this.generateDiagramTemplates(tempCount, backgroundColor, parentId, selectedItem));
-        (this.tempDialog as any).content = parentDiv.outerHTML;
+        // (this.tempDialog as any).content = parentDiv.outerHTML;
         this.triggerTemplateEvent(selectedItem);
     }
 
     public generateDiagramTemplates(tempCount: number, backgroundColor: string, parentId: string, selectedItem: SelectorViewModel): HTMLDivElement {
-
         let parentTemplateDiv: HTMLDivElement = document.createElement('div');
         parentTemplateDiv.classList.add('class', 'db-parent-diagram-template');
 
@@ -596,7 +596,8 @@ export class UtilityMethods {
 
     public enableArrangeMenuItems(selectedItem: SelectorViewModel): void {
         let contextInstance: any = document.getElementById('arrangeContextMenu');
-        let contextMenu: ContextMenu = contextInstance.ej2_instances[0] as ContextMenu;
+        let contextMenu: ContextMenu = contextInstance.ej2_instances[0] as any;
+        
         let selectedItems: Object[] | undefined = (selectedItem.selectedDiagram as any).selectedItems.nodes;
         selectedItems = (selectedItems as any).concat((selectedItem.selectedDiagram as any).selectedItems.connectors);
         for (let i: number = 0; i < contextMenu.items.length; i++) {

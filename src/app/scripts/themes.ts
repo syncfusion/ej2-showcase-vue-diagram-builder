@@ -258,7 +258,7 @@ export class DiagramTheme {
         (diagram as any).historyManager.endGroupAction();
     }
 
-    public applyThemeStyleforElement(element: object, themeName: { [key: string]: Object }): void {
+    public applyThemeStyleforElement(element: object, themeName ?: { [key: string]: any }): void {
         let themeType: { [key: string]: Object };
         if (!themeName) {
             themeType = this.getThemeStyle(this.selectedItem.themeStyle as any);

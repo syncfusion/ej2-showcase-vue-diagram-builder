@@ -7,7 +7,7 @@ import {
 } from '@syncfusion/ej2-diagrams';
 import { SelectorViewModel } from './selector';
 import { DataManager } from '@syncfusion/ej2-data';
-import { Dialog } from '@syncfusion/ej2-vue-popups';
+import { Dialog, DialogComponent } from '@syncfusion/ej2-vue-popups';
 import { MindMapUtilityMethods } from './mindmap';
 import { CustomProperties } from './customproperties';
 import { CommonKeyboardCommands } from './commoncommands';
@@ -325,8 +325,8 @@ export class OrgChartData {
 export abstract class OrgChartUtilityMethods {
 
     public static fileType: string;
-    public static uploadDialog: Dialog;
-    public static customPropertyDialog: Dialog;
+    public static uploadDialog: DialogComponent;
+    public static customPropertyDialog: DialogComponent;
     public static isUploadSuccess: boolean;
 
     public static selectedItem: SelectorViewModel;
@@ -409,9 +409,9 @@ export abstract class OrgChartUtilityMethods {
 
     public static showCustomProperty(): void {
         let node: NodeModel = (this.selectedItem.selectedDiagram as any).selectedItems.nodes[0] as NodeModel;
-        this.customProperty = new CustomProperties(this.selectedItem, this.customPropertyDialog);
+        this.customProperty = new CustomProperties(this.selectedItem, this.customPropertyDialog as unknown as DialogComponent);
         this.customProperty.getPropertyDialogContent(node.addInfo as any);
-        this.customPropertyDialog.cssClass = 'db-org-diagram';
+       (this.customPropertyDialog as any).cssClass = 'db-org-diagram';
         this.customPropertyDialog.dataBind();
         this.customPropertyDialog.show();
     }
@@ -831,18 +831,29 @@ export abstract class OrgChartUtilityMethods {
 
     public static handle: UserHandleModel[] = [
         {
-            name: 'orgAddHandle', pathColor: 'white', backgroundColor: '#7d7d7d', borderColor: 'white',
-            pathData: 'M 30.05 15.03 L 30.05 30.05 L 15.02 30.05 L 15.02 39.9 L 30.05 39.9 L 30.05 54.93 L 39.9 54.93 L 39.9 39.9 L 54.93 39.9 L 54.93 30.05 L 39.9 30.05 L 39.9 15.03 z',
-            side: 'Left', offset: 0, horizontalAlignment: 'Center', verticalAlignment: 'Center'
+        name: 'orgAddHandle',
+        pathColor: 'white',
+        backgroundColor: '#7d7d7d',
+        borderColor: 'white',
+        pathData:
+          'M 30.05 15.03 L 30.05 30.05 L 15.02 30.05 L 15.02 39.9 L 30.05 39.9 L 30.05 54.93 L 39.9 54.93 L 39.9 39.9 L 54.93 39.9 L 54.93 30.05 L 39.9 30.05 L 39.9 15.03 z',
+        side: 'Left',
+        offset: 0,
+        horizontalAlignment: 'Center',
+        verticalAlignment: 'Center'
         },
         {
             name: 'orgRemoveHandle', pathColor: 'white', backgroundColor: '#7d7d7d', borderColor: 'white',
             pathData: 'M 7.04 22.13 L 92.95 22.13 L 92.95 88.8 C 92.95 91.92 91.55 94.58 88.76 96.74 C 85.97 98.91 82.55 100 78.52 100 L 21.48 100 C 17.45 100 14.03 98.91 11.24 96.74 C 8.45 94.58 7.04 91.92 7.04 88.8 z M 32.22 0 L 67.78 0 L 75.17 5.47 L 100 5.47 L 100 16.67 L 0 16.67 L 0 5.47 L 24.83 5.47 z',
             visible: true, offset: 1, side: 'Right', horizontalAlignment: 'Center', verticalAlignment: 'Center'
         }, {
-            name: 'orgEditHandle', pathColor: 'white', backgroundColor: '#7d7d7d', borderColor: 'white',
-            pathData: 'M 42.65 30.41 L 67.5 53.99 L 41.2 78.73 C 39.41 80.42 37.34 81.27 34.99 81.27 C 32.65 81.27 30.57 80.49 28.78 78.93 L 25.05 82.44 L 0 82.44 L 16.36 67.05 C 14.57 65.36 13.67 63.41 13.67 61.2 C 13.67 58.99 14.57 56.98 16.36 55.16 z M 78.42 25.49 C 78.57 0 78.73 0.01 78.88 0.01 C 81.09 -0.12 83.09 0.66 84.88 2.35 L 97.52 14.04 C 99.17 15.86 100 17.87 100 20.09 C 100 22.29 99.17 24.24 97.52 25.93 L 71.84 50.09 L 46.79 26.51 L 72.47 2.35 C 74.15 0.77 76.13 -0.02 78.42 25.49 z',
-            side: 'Right', offset: 0, horizontalAlignment: 'Center', verticalAlignment: 'Center'
+        name: 'orgEditHandle', pathColor: 'white', backgroundColor: '#7d7d7d', borderColor: 'white',
+        pathData:
+          'M 42.65 30.41 L 67.5 53.99 L 41.2 78.73 C 39.41 80.42 37.34 81.27 34.99 81.27 C 32.65 81.27 30.57 80.49 28.78 78.93 L 25.05 82.44 L 0 82.44 L 16.36 67.05 C 14.57 65.36 13.67 63.41 13.67 61.2 C 13.67 58.99 14.57 56.98 16.36 55.16 z M 78.42 25.49 C 78.57 0 78.73 0.01 78.88 0.01 C 81.09 -0.12 83.09 0.66 84.88 2.35 L 97.52 14.04 C 99.17 15.86 100 17.87 100 20.09 C 100 22.29 99.17 24.24 97.52 25.93 L 71.84 50.09 L 46.79 26.51 L 72.47 2.35 C 74.15 0.77 76.13 -0.02 78.42 25.49 z',
+        side: 'Right',
+        offset: 0,
+        horizontalAlignment: 'Center',
+        verticalAlignment: 'Center'
         },
     ];
 }

@@ -27,7 +27,7 @@ export class DiagramClientSideEvents {
     }
 
     public selectionChange(args: ISelectionChangeEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+        let diagram: Diagram = (this.selectedItem as any).selectedDiagram;
         if (this.selectedItem.preventSelectionChange || this.selectedItem.isLoading) {
             return;
         }
@@ -208,7 +208,7 @@ export class DiagramClientSideEvents {
     };
 
     public scrollChange(args: IScrollChangeEventArgs): void {
-        this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
+        // this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
     }
 
     public nodeRotationChange(args: IRotationEventArgs): void {
@@ -221,7 +221,7 @@ export class DiagramClientSideEvents {
     }
 
     public diagramContextMenuClick(args: DiagramMenuEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+        let diagram: Diagram = (this.selectedItem as any).selectedDiagram ;
         this.selectedItem.customContextMenu.updateBpmnShape(diagram, args.item);
         let text: string = args.item.text as string;
         if (text === "Group" || text === "Un Group" || text === "Undo" || text === "Redo" || text === "Select All") {
@@ -251,7 +251,7 @@ export class DiagramClientSideEvents {
     }
 
     public diagramContextMenuOpen(args: DiagramBeforeMenuOpenEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+        let diagram: Diagram = (this.selectedItem as any).selectedDiagram;
         args.hiddenItems = args.hiddenItems.concat(this.selectedItem.customContextMenu.getHiddenMenuItems(diagram));
     }
 
@@ -263,7 +263,7 @@ export class DiagramClientSideEvents {
     }
 
     public historyChange(args: IHistoryChangeArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+        let diagram: Diagram = (this.selectedItem as any).selectedDiagram;
         let toolbarContainer: HTMLDivElement = document.getElementsByClassName("db-toolbar-container")[0] as HTMLDivElement;
         toolbarContainer.classList.remove("db-undo");
         toolbarContainer.classList.remove("db-redo");

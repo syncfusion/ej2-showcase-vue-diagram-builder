@@ -5,17 +5,17 @@
 import { SelectorViewModel } from './selector';
 import { Button } from '@syncfusion/ej2-buttons';
 import { LayerModel } from '@syncfusion/ej2-diagrams/src/diagram/diagram/layer-model';
-import { Dialog } from '@syncfusion/ej2-vue-popups';
+import { DialogComponent } from '@syncfusion/ej2-vue-popups';
 
 
 export class DiagramBuilderLayer {
     private removeLayer: Button | undefined;
     // public selectionLayer: Button;
     public selectedItem: SelectorViewModel;
-    public layerDialog: Dialog;
+    public layerDialog: DialogComponent;
     private isEditing: boolean = false;
     private layerCount1: number = 0;
-    constructor(selectedItem: SelectorViewModel, layerDialog: Dialog) {
+    constructor(selectedItem: SelectorViewModel, layerDialog: DialogComponent) {
         this.selectedItem = selectedItem;
         this.layerDialog = layerDialog;
     }
@@ -49,7 +49,7 @@ export class DiagramBuilderLayer {
                 (this.removeLayer as any).disabled = false;
             }
         }
-        this.layerDialog.content = layerDialogContent.outerHTML;
+        (this.layerDialog as any).content  = layerDialogContent.outerHTML;
         this.triggerEvents();
     }
 

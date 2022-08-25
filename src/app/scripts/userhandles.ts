@@ -1,36 +1,34 @@
-import { Node, ToolBase, MouseEventArgs } from '@syncfusion/ej2-diagrams';
-import { MindMapUtilityMethods } from './mindmap';
-import { OrgChartUtilityMethods } from './orgchart';
-import { SelectorViewModel } from './selector';
+import { Node, ToolBase, MouseEventArgs } from "@syncfusion/ej2-diagrams";
+import { MindMapUtilityMethods } from "./mindmap";
+import { OrgChartUtilityMethods } from "./orgchart";
+import { SelectorViewModel } from "./selector";
 
 export class CustomTool {
     public selectedItem: SelectorViewModel;
-    constructor(selectedItem: SelectorViewModel) {
-        this.selectedItem = selectedItem;
-    }
+    
     public getTool(action: string): ToolBase {
         let tool: any;
-        if (action === 'leftHandle') {
+        if (action === "leftHandle") {
             let leftTool: LeftExtendTool = new LeftExtendTool((this.selectedItem.selectedDiagram as any).commandHandler);
             leftTool.selectedItem = this.selectedItem;
             return leftTool;
-        } else if (action === 'rightHandle') {
+        } else if (action === "rightHandle") {
             let rightTool: RightExtendTool = new RightExtendTool((this.selectedItem.selectedDiagram as any).commandHandler);
             rightTool.selectedItem = this.selectedItem;
             return rightTool;
-        } else if (action === 'removeHandle') {
+        } else if (action === "removeHandle") {
             let removeTool: RemoveTool = new RemoveTool((this.selectedItem.selectedDiagram as any).commandHandler);
             removeTool.selectedItem = this.selectedItem;
             return removeTool;
-        } else if (action === 'orgAddHandle') {
+        } else if (action === "orgAddHandle") {
             let orgAddTool: OrgAddHandleTool = new OrgAddHandleTool((this.selectedItem.selectedDiagram as any).commandHandler);
             orgAddTool.selectedItem = this.selectedItem;
             return orgAddTool;
-        } else if (action === 'orgRemoveHandle') {
+        } else if (action === "orgRemoveHandle") {
             let orgRemoveTool: OrgRemoveHandleTool = new OrgRemoveHandleTool((this.selectedItem.selectedDiagram as any).commandHandler);
             orgRemoveTool.selectedItem = this.selectedItem;
             return orgRemoveTool;
-        } else if (action === 'orgEditHandle') {
+        } else if (action === "orgEditHandle") {
             let orgEditTool: OrgEditHandleTool = new OrgEditHandleTool((this.selectedItem.selectedDiagram as any).commandHandler);
             orgEditTool.selectedItem = this.selectedItem;
             return orgEditTool;
@@ -50,7 +48,7 @@ class LeftExtendTool extends ToolBase {
             let selectedObject: Object[] = this.commandHandler.getSelectedObject();
             if (selectedObject[0]) {
                 if (selectedObject[0] instanceof Node) {
-                    MindMapUtilityMethods.addNode('Left');
+                    MindMapUtilityMethods.addNode("Left");
                 }
             }
         }
@@ -69,7 +67,7 @@ class RightExtendTool extends ToolBase {
             let selectedObject: Object[] = this.commandHandler.getSelectedObject();
             if (selectedObject[0]) {
                 if (selectedObject[0] instanceof Node) {
-                    MindMapUtilityMethods.addNode('Right');
+                    MindMapUtilityMethods.addNode("Right");
                 }
             }
         }

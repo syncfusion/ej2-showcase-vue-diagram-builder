@@ -5,15 +5,15 @@
 import { NodeModel, Diagram, NodeConstraints, Node, ShapeAnnotationModel } from '@syncfusion/ej2-diagrams';
 import { Button, CheckBox, ChangeEventArgs } from '@syncfusion/ej2-buttons';
 import { SelectorViewModel } from './selector';
-import { Dialog } from '@syncfusion/ej2-vue-popups';
+import { Dialog, DialogComponent } from '@syncfusion/ej2-vue-popups';
 
 
 export class CustomProperties {
     public selectedItem: SelectorViewModel;
-    public customPropertyDialog: Dialog;
+    public customPropertyDialog: DialogComponent;
     public deleteField: any;
 
-    constructor(selectedItem: SelectorViewModel, customPropertyDialog: Dialog) {
+    constructor(selectedItem: SelectorViewModel, customPropertyDialog: DialogComponent) {
         this.selectedItem = selectedItem;
         this.customPropertyDialog = customPropertyDialog;
     }
@@ -29,7 +29,7 @@ export class CustomProperties {
             this.createSpaceElement(propertyDialogContent);
         }
         propertyDialogContent.appendChild(this.clonePropTemplate());
-        this.customPropertyDialog.content = propertyDialogContent.outerHTML;
+        (this.customPropertyDialog as any).content = propertyDialogContent.outerHTML;
         this.triggerEvents(addInfo);
     }
 
