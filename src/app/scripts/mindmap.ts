@@ -178,7 +178,7 @@ export class MindMap {
 
     private navigateChild(direction: string): void {
         let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-        let node: Node;
+        let node: any = null;
         if (direction === 'top' || direction === 'bottom') {
             let sameLevelNodes: Node[] = this.getSameLevelNodes();
             let index: number = sameLevelNodes.indexOf((diagram.selectedItems as any).nodes[0] as Node);
@@ -189,7 +189,7 @@ export class MindMap {
         if (node) {
             diagram.clearSelection();
             diagram.select([node]);
-            diagram.bringIntoView(node.wrapper.bounds);
+            // diagram.bringIntoView(node.wrapper.bounds);
         }
     }
 
@@ -218,10 +218,10 @@ export class MindMap {
     private getMinDistanceNode(diagram: Diagram, direction: string): Node {
         let node: Node = (diagram.selectedItems as any).nodes[0] as Node;
         let parentBounds: Rect = node.wrapper.bounds;
-        let childBounds: Rect;
+        let childBounds: any = null;
         let oldChildBoundsTop: number = 0;
-        let childNode: Node;
-        let lastChildNode: any;
+        let childNode: any = null;
+        let lastChildNode: any = null;
         let leftOrientationFirstChild: any = null, rightOrientationFirstChild: any = null;
         if (node.id === 'rootNode') {
             let edges: string[] = node.outEdges;
@@ -301,7 +301,7 @@ export class MindMap {
                 },
                 root: rootNode.id
             };
-            diagram.pageSettings = { width: 0, height: 0 };
+            (diagram as any).pageSettings = { width: null, height:null };
             diagram.selectedItems = { userHandles: MindMapUtilityMethods.handle, constraints: SelectorConstraints.UserHandle };
             diagram.commandManager = this.getCommandSettings();
             //diagram.tool = DiagramTools.SingleSelect | DiagramTools.ZoomPan;
@@ -327,7 +327,7 @@ export class MindMap {
                 return 'Left';
             },
         };
-        diagram.pageSettings = { width: 0, height: 0 };
+        (diagram  as any).pageSettings= { width :null, height: null};
         diagram.selectedItems = { userHandles: MindMapUtilityMethods.handle, constraints: SelectorConstraints.UserHandle };
         diagram.commandManager = this.getCommandSettings();
         diagram.tool = DiagramTools.SingleSelect | DiagramTools.ZoomPan;
@@ -364,7 +364,7 @@ export abstract class MindMapUtilityMethods {
             } else {
                 selecteditemOrientation = ((this.selectedItem.pastedFirstItem as Node).addInfo as { [key: string]: Object }).orientation.toString();
             }
-            selectedelement = this.selectedItem.pastedFirstItem as Node;
+            selectedelement = this.selectedItem.pastedFirstItem ;
             mindmapData = MindMapUtilityMethods.getMindMapShape(selectedNode);
             let connector: ConnectorModel = MindMapUtilityMethods.setConnectorDefault(diagram, selecteditemOrientation, mindmapData.connector, selectedNode.id, selectedelement.id);
             diagram.add(connector);
@@ -378,7 +378,7 @@ export abstract class MindMapUtilityMethods {
             this.selectedItem.preventPropertyChange = false;
             diagram.doLayout();
             diagram.endGroupAction();
-            diagram.bringIntoView((diagram.nodes as any)[diagram.nodes.length - 1].wrapper.bounds);
+            // diagram.bringIntoView((diagram.nodes as any)[diagram.nodes.length - 1].wrapper.bounds);
         }
     }
 
@@ -629,7 +629,7 @@ export abstract class MindMapUtilityMethods {
         diagram.select([node1]);
         this.selectedItem.preventPropertyChange = false;
         diagram.dataBind();
-        diagram.bringIntoView((node1 as any).wrapper.bounds);
+        // diagram.bringIntoView((node1 as any).wrapper.bounds);
         diagram.startTextEdit(node1, (node1 as any).annotations[0].id);
         this.selectedItem.isModified = true;
     }
@@ -662,7 +662,7 @@ export abstract class MindMapUtilityMethods {
             this.selectedItem.preventPropertyChange = true;
             diagram.select([node1]);
             this.selectedItem.preventPropertyChange = false;
-            diagram.bringIntoView((node1 as any).wrapper.bounds);
+            // diagram.bringIntoView((node1 as any).wrapper.bounds);
             diagram.startTextEdit(node1, (node1 as any).annotations[0].id);
             this.selectedItem.isModified = true;
         }

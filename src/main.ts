@@ -2,9 +2,9 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import "./assets/index.css";
-import "./assets/db-icons1/style.css";
-import "./assets/dbstyle/diagrambuilder.css";
+// import "./assets/index.css";
+// import "./assets/db-icons1/style.css";
+// import "./assets/dbstyle/diagrambuilder.css";
 // import "bootstrap/dist/css/bootstrap.min.css"
 // import "bootstrap-vue/dist/bootstrap-vue.css"
 // import "bootstrap";

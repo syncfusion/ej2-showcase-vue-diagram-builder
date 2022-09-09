@@ -30,6 +30,7 @@ export class CustomProperties {
         }
         propertyDialogContent.appendChild(this.clonePropTemplate());
         (this.customPropertyDialog as any).content = propertyDialogContent.outerHTML;
+        (this.customPropertyDialog as any).refresh();
         this.triggerEvents(addInfo);
     }
 
@@ -71,7 +72,7 @@ export class CustomProperties {
             (document.getElementsByClassName('db-custom-prop-info-template')[0] as HTMLDivElement).cloneNode(true) as HTMLDivElement;
         propertyInfo.style.display = '';
         let propertyName: string = key;
-        if (keyValue.type === 'nameField') {
+        if (keyValue.type ==="nameField") {
             propertyName = 'Name';
         } else if (keyValue.type === 'imageField') {
             propertyName = 'Image URL';

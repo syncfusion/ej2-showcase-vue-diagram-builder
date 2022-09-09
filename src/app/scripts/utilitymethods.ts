@@ -36,7 +36,8 @@ export class UtilityMethods {
         (selectedItem as any).nodeProperties.rotateAngle = node.rotateAngle;
         selectedItem.nodeProperties.strokeColor = this.getHexColor((node as any).style.strokeColor);
         selectedItem.nodeProperties.strokeStyle = (node as any).style.strokeDashArray ? (node as any).style.strokeDashArray : 'None';
-        selectedItem.nodeProperties.strokeWidth = (node as any).style.strokeWidth;
+        selectedItem.nodeProperties.strokeWidth  = (node as any).style.strokeWidth;
+        
         selectedItem.nodeProperties.fillColor = this.getHexColor((node as any).style.fill);
         selectedItem.nodeProperties.opacity = (node as any).style.opacity * 100;
         selectedItem.nodeProperties.opacityText = selectedItem.nodeProperties.opacity + '%';
@@ -266,8 +267,10 @@ export class UtilityMethods {
 
         let diagramTemplatesDiv: HTMLDivElement = parentDiv.getElementsByClassName('diagramTemplates')[0] as HTMLDivElement;
         diagramTemplatesDiv.appendChild(this.generateDiagramTemplates(tempCount, backgroundColor, parentId, selectedItem));
-        // (this.tempDialog as any).content = parentDiv.outerHTML;
+        (this.tempDialog as any).content = parentDiv.outerHTML;
+        (this.tempDialog as any).dataBind();
         this.triggerTemplateEvent(selectedItem);
+        return  (this.tempDialog as any).content;
     }
 
     public generateDiagramTemplates(tempCount: number, backgroundColor: string, parentId: string, selectedItem: SelectorViewModel): HTMLDivElement {
@@ -314,7 +317,7 @@ export class UtilityMethods {
     }
 
     public flowChartImage: { [key: string]: string }[] = [
-        { source: './assets/dbstyle/common_images/blank_diagram.svg', name: 'Blank Diagram', type: 'svg_blank' },
+        { source: "./assets/dbstyle/common_images/blank_diagram.svg", name: 'Blank Diagram', type: 'svg_blank' },
         { source: './assets/dbstyle/flowchart_Images/Credit_Card_Processing.svg', name: 'Credit Card Processing', type: 'svg_image' },
         { source: './assets/dbstyle/flowchart_Images/Bank_Teller_Flow.svg', name: 'Banking Teller Process Flow', type: 'svg_image' },
         { source: './assets/dbstyle/flowchart_Images/Developer_Workflow.SVG', name: 'Agile"s Developer Workflow', type: 'svg_image' },
@@ -542,8 +545,8 @@ export class UtilityMethods {
     }
 
     public enableMenuItems(itemText: string, selectedItem: SelectorViewModel): boolean {
-        let selectedItems: Object[] | undefined = (selectedItem.selectedDiagram as any).selectedItems.nodes;
-        selectedItems = (selectedItems as any).concat((selectedItem.selectedDiagram as any).selectedItems.connectors);
+        let selectedItems: Object[] | undefined = selectedItem.selectedDiagram.selectedItems.nodes;
+        selectedItems = (selectedItems as any).concat(selectedItem.selectedDiagram.selectedItems.connectors);
         if (itemText) {
             let commandType: string = itemText.replace(/[' ']/g, '');
             if ((selectedItems as any).length === 0 || selectedItem.diagramType !== 'GeneralDiagram') {
@@ -573,10 +576,10 @@ export class UtilityMethods {
             if (selectedItem.pasteData.length === 0 && itemText === 'Paste') {
                 return true;
             }
-            if (itemText === 'Undo' && (selectedItems as any).selectedDiagram.historyManager.undoStack.length === 0) {
+            if (itemText === 'Undo' && (selectedItem as any).selectedDiagram.historyManager.undoStack.length === 0) {
                 return true;
             }
-            if (itemText === 'Redo' && (selectedItems as any).selectedDiagram.historyManager.redoStack.length === 0) {
+            if (itemText === 'Redo' && (selectedItem as any).selectedDiagram.historyManager.redoStack.length === 0) {
                 return true;
             }
             if (itemText === 'Select All') {

@@ -190,7 +190,7 @@ export class OrgChartData {
         if (node) {
             (diagram as any).clearSelection();
             (diagram as any).select([node]);
-            (diagram as any).bringIntoView(node.wrapper.bounds);
+            // (diagram as any).bringIntoView(node.wrapper.bounds);
         }
     }
 
@@ -309,7 +309,7 @@ export class OrgChartData {
         };
         diagram.selectedItems = { userHandles: OrgChartUtilityMethods.handle, constraints: SelectorConstraints.UserHandle };
         diagram.tool = DiagramTools.SingleSelect | DiagramTools.ZoomPan;
-        diagram.pageSettings = { width: 0, height: 0 };
+        (diagram as any).pageSettings = { width: null, height: null };
         diagram.commandManager = this.getCommandSettings();
         diagram.snapSettings.constraints = (diagram as any).snapSettings.constraints & ~SnapConstraints.ShowLines;
         diagram.selectedItems.constraints = SelectorConstraints.UserHandle;
@@ -326,7 +326,7 @@ export abstract class OrgChartUtilityMethods {
 
     public static fileType: string;
     public static uploadDialog: DialogComponent;
-    public static customPropertyDialog: DialogComponent;
+    public static customPropertyDialog: DialogComponent | undefined;
     public static isUploadSuccess: boolean;
 
     public static selectedItem: SelectorViewModel;
@@ -360,7 +360,7 @@ export abstract class OrgChartUtilityMethods {
             (diagram as any).clearSelection();
             (diagram as any).select([selectedelement]);
             (diagram as any).doLayout();
-            (diagram as any).bringIntoView((diagram as any).nodes[(diagram as any).nodes.length - 1].wrapper.bounds);
+            // (diagram as any).bringIntoView((diagram as any).nodes[(diagram as any).nodes.length - 1].wrapper.bounds);
         }
         this.selectedItem.isModified = true;
         (diagram as any).endGroupAction();
@@ -412,8 +412,8 @@ export abstract class OrgChartUtilityMethods {
         this.customProperty = new CustomProperties(this.selectedItem, this.customPropertyDialog as unknown as DialogComponent);
         this.customProperty.getPropertyDialogContent(node.addInfo as any);
        (this.customPropertyDialog as any).cssClass = 'db-org-diagram';
-        this.customPropertyDialog.dataBind();
-        this.customPropertyDialog.show();
+        (this.customPropertyDialog as any).dataBind();
+        (this.customPropertyDialog as any).show();
     }
 
     public static getParentChildValues(): { [key: string]: string[] } {
@@ -476,7 +476,7 @@ export abstract class OrgChartUtilityMethods {
         this.selectedItem.preventPropertyChange = true;
         (diagram as any).select([node1]);
         this.selectedItem.preventPropertyChange = false;
-        (diagram as any).bringIntoView((node1 as any).wrapper.bounds);
+        // (diagram as any).bringIntoView((node1 as any).wrapper.bounds);
         this.selectedItem.isModified = true;
     }
 
@@ -645,7 +645,6 @@ export abstract class OrgChartUtilityMethods {
         (diagram as any).commandManager = this.orgChart.getCommandSettings();
         (diagram as any).snapSettings.constraints = (diagram as any).snapSettings.constraints & ~SnapConstraints.ShowLines;
         (diagram as any).selectedItems.constraints = SelectorConstraints.UserHandle;
-        (diagram as any).dataBind();
         (diagram as any).dataBind();
         this.uploadDialog.hide();
     }

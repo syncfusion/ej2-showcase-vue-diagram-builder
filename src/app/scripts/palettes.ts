@@ -175,13 +175,13 @@ export class Palettes {
 
 
     public palettes: PaletteModel[] = [
-        { id: 'flow', expanded: false, symbols: this.getFlowShapes(), title: 'Flow Shapes' },
+        { id: 'flow', expanded: true, symbols: this.getFlowShapes(), title: 'Flow Shapes' },
         { id: 'basic', expanded: false, symbols: this.getBasicShapes(), title: 'Basic Shapes' },
         { id: 'bpmn', expanded: false, symbols: this.getBPMNShapes(), title: 'BPMN Shapes' },
         { id: 'connectors', expanded: false, symbols: this.getConnectors(), title: 'Connectors' }
     ];
     public expandMode: ExpandMode = 'Multiple';
-    public symbolPreview: SymbolPreviewModel = { height: 100, width: 100 };
+    public symbolPreview: SymbolPreviewModel = { height: 50, width: 50 };
 
     public enableSearch: boolean = true;
     public symbolMargin: MarginModel = { left: 12, right: 12, top: 12, bottom: 12 };
@@ -193,17 +193,17 @@ export class Palettes {
     public setPaletteNodeDefaults(node: NodeModel): void {
         if (!(node.addInfo && (node.addInfo as { [key: string]: any }).type === 'CustomShapes') && (!node.children)) {
             if (node.id === 'Terminator' || node.id === 'Process') {
-                node.width = 130;
-                node.height = 65;
+                node.width = 50;
+                node.height = 50;
             } else {
                 node.width = 50;
                 node.height = 50;
             }
             node.ports = [
-                { offset: { x: 0, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw },
-                { offset: { x: 0.5, y: 0 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw },
-                { offset: { x: 1, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw },
-                { offset: { x: 0.5, y: 1 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw }
+                { offset: { x: 0, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Default | PortConstraints.Draw },
+                { offset: { x: 0.5, y: 0 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Default | PortConstraints.Draw }, 
+                { offset: { x: 1, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Default | PortConstraints.Draw },
+                { offset: { x: 0.5, y: 1 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Default | PortConstraints.Draw }
             ];
             //node.style.strokeColor = '#3A3A3A';
         }

@@ -1,12 +1,10 @@
-
 <template>
 <div>
 <ejs-contextmenu id='arrangeContextMenu' :animationSettings='dialogAnimationSettings' :items='dropDownDataSources.arrangeMenuItems'
     :onOpen='arrangeContextMenuOpen' cssClass="arrangeMenu"  v-on:select="contextMenuClick($event)"
     :beforeClose="arrangeMenuBeforeClose">
-    <!-- (beforeOpen)="arrangeMenuBeforeOpen($event)"  -->
 </ejs-contextmenu>
-  <div class="diagrambuilder-container">
+  <div class="diagrambuilder-container" style="display: none;">
     <div class="header navbar">
       <div class="db-header-container">
         <div class="db-diagram-name-container">
@@ -125,10 +123,7 @@
                   tooltipText="Zoom Out(Ctrl + -)"
                   cssClass="tb-item-start"
                 ></e-item>
-                <e-item cssClass="tb-item-end tb-zoom-dropdown-btn">
-                  template:'<ejs-dropdownbutton id="btnZoomIncrement" :items='dropDownDataSources.zoomMenuItems' :content="selectedItem.scrollSettings.currentZoom"
-                                    v-on:select="zoomChange($event)">
-                            </ejs-dropdownbutton>'
+                <e-item cssClass="tb-item-end tb-zoom-dropdown-btn"   :template = "toolbarTemplate" >
                 </e-item>
                 <e-item
                   prefixIcon="sf-icon-ZoomIn tb-icons"
@@ -147,16 +142,17 @@
                   cssClass="tb-item-middle tb-item-selected"
                 ></e-item>
                 <e-item
+                 
                   tooltipText="Draw Shapes"
                   cssClass="tb-item-middle tb-drawtools-dropdown-btn tb-custom-diagram-disable"
-                  >
-                  template:'<ejs-dropdownbutton id='btnDrawShape' :items='dropDownDataSources.drawShapesList' iconCss='sf-icon-DrawingMode'
-                                    v-on:select="drawShapeChange($event)">
-                                </ejs-dropdownbutton>'
+                 :template = "drawShapeTemplate" >
+                 
                 </e-item>
                 <e-item
+                  
                   tooltipText="Draw Connectors"
                   cssClass="tb-item-middle tb-drawtools-dropdown-btn tb-custom-diagram-disable"
+                  :template = "drawConnectorTemplate"
                   >
                 </e-item>
                 <e-item
@@ -214,7 +210,8 @@
                 <e-item
                   tooltipText="Order"
                   cssClass="tb-item-end tb-item-order tb-dropdown-btn-icon"
-                  >
+                  :template = "orderTemplate"
+                 >
                 </e-item>
                 <e-item type="Separator"></e-item>
                 <e-item
@@ -271,11 +268,14 @@
     <div class="row content">
       <div class="sidebar show-overview">
         <div class="db-palette-parent">
-          <ejs-symbolpalette id="symbolpalette" ref="paletteObj" width="100%" height="100%" symbolHeight="50" symbolWidth="50" 
-           :palettes='palettes.palettes'
+          <ejs-symbolpalette id="symbolpalette" ref="paletteObj" width="100%" height="100%" 
+           :palettes='palettes.palettes' 
+           :symbolWidth = "50"
+           :symbolHeight = "50"
            :getSymbolInfo='palettes.getSymbolInfo' :symbolMargin='palettes.symbolMargin'
+           :symbolPreview ='palettes.symbolPreview'
            :getNodeDefaults='palettes.setPaletteNodeDefaults'
-           :enableSearch='palettes.enableSearch' >
+           :enableSearch='palettes.enableSearch'>
           </ejs-symbolpalette>
         </div>
         <div class="db-overview-parent">
@@ -298,7 +298,7 @@
           <div id="diagramContainerDiv" class="db-current-diagram-container">
             <ejs-diagram
               id="diagram"
-              ref="diagramObj"
+              ref="diagram"
               :width="width"
               :height="height"
               :snapSettings="snapSettings"
@@ -308,6 +308,8 @@
               :getNodeDefaults="setNodeDefaults"
               :getConnectorDefaults="setConnectorDefaults"
               :selectionChange="this.diagramEvents.selectionChange.bind(this.diagramEvents)"
+              :positionChange="this.diagramEvents.nodePositionChange.bind(this.diagramEvents)"
+              :sizeChange="this.diagramEvents.nodeSizeChange.bind(this.diagramEvents)"   
               :rotateChange="this.diagramEvents.nodeRotationChange.bind(this.diagramEvents)"
               :contextMenuOpen="this.diagramEvents.diagramContextMenuOpen.bind(this.diagramEvents)"
               :contextMenuClick="this.diagramEvents.diagramContextMenuClick.bind(this.diagramEvents)"
@@ -337,9 +339,9 @@
               class="db-diagram-prop-container"
             >
               <div class="row db-prop-header-text">Page Settings</div>
-              <div class="row db-prop-row">
+              <div class="row db-prop-row" style="background:white">
                 <ejs-dropdownlist id="pageSettingsList" :dataSource="dropDownDataSources.paperList" v-on:change="diagramPropertyBinding.paperListChange($event)"
-                                :fields="dropdownListFields" :value="selectedItem.pageSettings.paperSize"></ejs-dropdownlist>
+                  :fields="dropdownListFields" :value="selectedItem.pageSettings.paperSize" ></ejs-dropdownlist>
               </div>
               <div class="row db-prop-row" id="pageOrientation">
                 <div
@@ -410,6 +412,7 @@
                       <ejs-colorpicker
                         type="color"
                         mode="Palette"
+                        :showButtons="false"
                         width="100%"
                         :value="selectedItem.pageSettings.backgroundColor"
                         v-on:change="diagramPropertyBinding.pageBackgroundChange1($event)"
@@ -522,7 +525,7 @@
                         <ejs-numerictextbox
                           id="nodeRotateAngle"
                           format="n0"
-                           v-model="selectedItem.nodeProperties.rotateAngle"
+                          v-model="selectedItem.nodeProperties.rotateAngle"
                         ></ejs-numerictextbox>
                       </div>
                     </div>
@@ -567,6 +570,7 @@
                             id="nodeFillColor"
                             type="color"
                             mode="Palette"
+                            :showButtons="false"
                             v-model="selectedItem.nodeProperties.fillColor"
                           ></ejs-colorpicker>
                         </div>
@@ -604,6 +608,7 @@
                             id="nodeGradientColor"
                             type="color"
                             mode="Palette"
+                            :showButtons="false"
                             v-model="selectedItem.nodeProperties.gradientColor"
                           ></ejs-colorpicker>
                         </div>
@@ -638,6 +643,7 @@
                             id="nodeStrokeColor"
                             type="color"
                             mode="Palette"
+                            :showButtons="false"
                             v-model="selectedItem.nodeProperties.strokeColor"
                           ></ejs-colorpicker>
                         </div>
@@ -648,23 +654,18 @@
                       </div>
                     </div>
                     <div class="col-xs-4 db-col-center">
-                      <ejs-dropdownlist id="nodeBorderStyle" :value="selectedItem.nodeProperties.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
-                                        :itemTemplate ="itemTemplate" :valueTemplate ="valueTemplate" popupWidth="160px" :fields="dropdownListFields">
-                      <!-- <template v-slot:itemTemplate="{data}">
-                        <div class="db-ddl-template-style"> {{data.className}} </div>
-                      </template>                                        
-                      <template v-slot:valueTemplate="{data}">
-                        <div class="db-ddl-template-style"> {{data.className}} </div>
-                      </template>                                                    -->
-      <!-- <div class="db-ddl-template-style"><span class="{{className}}"></span></div> -->
+                      <ejs-dropdownlist id="nodeBorderStyle" v-model="selectedItem.nodeProperties.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
+                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate" :close="close">
+                                                                    
                       </ejs-dropdownlist>
+                        
                     </div>
                     <div class="col-xs-4 db-col-right">
                       <ejs-numerictextbox
                         id="nodeStrokeWidth"
-                        min="0"
-                        step="0.5"
-                       v-model="selectedItem.nodeProperties.strokeWidth"
+                        :min="0"
+                        :step="0.5"
+                        v-model="selectedItem.nodeProperties.strokeWidth"
                       ></ejs-numerictextbox>
                     </div>
                   </div>
@@ -724,6 +725,7 @@
                         id="lineColor"
                         mode="Palette"
                         type="color"
+                        :showButtons="false"
                         v-model="selectedItem.connectorProperties.lineColor"
                       ></ejs-colorpicker>
                     </div>
@@ -738,19 +740,25 @@
                 <div class="col-xs-8 db-col-left db-prop-text-style">
                   <span class="db-prop-text-style">Stroke Style</span>
                 </div>
-                <div class="col-xs-4 db-col-right db-prop-text-style">
+                <div class="col-xs-4 db-col-right db-prop -text-style">
                   <span class="db-prop-text-style">Thickness</span>
                 </div>
               </div>
               <div class="row">
                 <div class="col-xs-8 db-col-left">
-                  <ejs-dropdownlist id="lineStyle"
-                  :value="selectedItem.connectorProperties.lineStyle" :dataSource="dropDownDataSources.borderStyles"
-                                    :fields="dropdownListFields">
+                  <ejs-dropdownlist id="lineStyle" 
+                        :dataSource="dropDownDataSources.borderStyles"
+                                    :fields="dropdownListFields" >
+                      <template v-slot:itemTemplate="{data}">
+                          <div class="db-ddl-template-style">{{data.className}}</div>
+                      </template>                                         
+                      <template v-slot:valueTemplate="{data}">
+                          <div class="db-ddl-template-style"> {{data.className}}</div>
+                      </template>  
                   </ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="0.5" step="0.5" v-model="selectedItem.connectorProperties.lineWidth"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="0.5" :step="0.5" v-model="selectedItem.connectorProperties.lineWidth"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -767,7 +775,7 @@
                                     :fields="dropdownListFields"></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="1" step="1" v-model="selectedItem.connectorProperties.sourceSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.connectorProperties.sourceSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -784,7 +792,7 @@
                                     fields="dropdownListFields"></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="1" step="1" v-model="selectedItem.connectorProperties.targetSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.connectorProperties.targetSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -796,9 +804,12 @@
                   id="lineJumpSizeDiv"
                   style="display: none"
                 >
-                  <ejs-numerictextbox min="1" step="1" v-model="selectedItem.connectorProperties.lineJumpSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.connectorProperties.lineJumpSize"></ejs-numerictextbox>
                 </div>
               </div>
+              <div class="row db-prop-row">
+                  <ejs-checkbox id="SegmentEditing" :checked="false" label="Segment Editing" v-on:change ="SegmentEditing($event)" ></ejs-checkbox>
+                </div>
               <div class="row db-prop-row">
                 <div
                   class="col-xs-2 db-col-right db-prop-text-style"
@@ -836,16 +847,16 @@
               <div class="row db-prop-row">
                 <div class="col-xs-8 db-col-left">
                   <ejs-dropdownlist height="34px" :dataSource="dropDownDataSources.fontFamilyList" v-model="selectedItem.textProperties.fontFamily"
-                                    :fields="dropdownListFields"></ejs-dropdownlist>
+                                    :fields="dropdownListFields" index=0></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="1" step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
                 <div class="col-xs-6 db-col-left" id="textPositionDiv">
-                  <ejs-dropdownlist id="ddlTextPosition" :dataSource="selectedItem.textProperties.textPositionDataSource" :value="selectedItem.textProperties.textPosition"
-                                    :fields="dropdownListFields" v-on:change="diagramPropertyBinding.textPositionChange($event)"></ejs-dropdownlist>
+                  <ejs-dropdownlist id="ddlTextPosition" index=0 :dataSource="selectedItem.textProperties.textPositionDataSource" :value="selectedItem.textProperties.textPosition"
+                                    :fields="dropdownListFields" v-on:change="diagramPropertyBinding.textPositionChange($event)" ></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-6 db-col-right" id="textColorDiv">
                   <div class="db-color-container">
@@ -854,6 +865,7 @@
                         id="textColor"
                         mode="Palette"
                         type="color"
+                        :showButtons="false"
                         v-model="selectedItem.textProperties.fontColor"
                       ></ejs-colorpicker>
                     </div>
@@ -866,7 +878,7 @@
                 </div>
               </div>
               <div class="row db-prop-row">
-                <div class="col-xs-6 db-col-left">
+                <div>
                   <ejs-toolbar id="toolbarTextStyle" overflowMode="Scrollable"  v-on:clicked="diagramPropertyBinding.toolbarTextStyleChange($event)">
                     <e-items>
                       <e-item
@@ -887,7 +899,7 @@
                     </e-items>
                   </ejs-toolbar>
                 </div>
-                <div class="col-xs-6 db-col-right">
+                <div>
                   <ejs-toolbar
                     id="toolbarTextSubAlignment"
                     overflowMode="Scrollable"
@@ -980,6 +992,7 @@
                 </div>
               </div>
             </div>
+          </div>
             <div id="mindMapContainer" class="db-mindmap-prop-container">
               <div class="row db-prop-header-text">MindMap Pattern</div>
               <div class="row db-prop-row">
@@ -1014,7 +1027,8 @@
                         id="mindmapFill"
                         mode="Palette"
                         type="color"
-                        :value="selectedItem.mindmapSettings.fill"
+                        :showButtons="false"
+                        v-model="selectedItem.mindmapSettings.fill"
                       ></ejs-colorpicker>
                     </div>
                     <div class="db-color-btn">
@@ -1032,7 +1046,8 @@
                         id="mindmapStroke"
                         mode="Palette"
                         type="color"
-                        :value="selectedItem.mindmapSettings.stroke"
+                        :showButtons="false"
+                        v-model="selectedItem.mindmapSettings.stroke"
                       ></ejs-colorpicker>
                     </div>
                     <div class="db-color-btn">
@@ -1042,12 +1057,12 @@
                   </div>
                 </div>
                 <div class="col-xs-4 db-col-center">
-                  <ejs-dropdownlist :value="selectedItem.mindmapSettings.strokeStyle" :dataSource="dropDownDataSources.borderStyles" :fields="dropdownListFields" popupWidth="160px">
+                  <ejs-dropdownlist v-model="selectedItem.mindmapSettings.strokeStyle" :dataSource="dropDownDataSources.borderStyles" :fields="dropdownListFields" popupWidth="160px">
                     
                   </ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="0.5" step="0.5" :value="selectedItem.mindmapSettings.strokeWidth"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="0.5" :step="0.5" v-model="selectedItem.mindmapSettings.strokeWidth"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -1063,7 +1078,7 @@
                     max="100"
                     step="10"
                     type="MinRange"
-                    :value="selectedItem.mindmapSettings.opacity"
+                   v-model="selectedItem.mindmapSettings.opacity"
                   ></ejs-slider>
                 </div>
                 <div class="col-xs-2 db-col-right">
@@ -1071,7 +1086,7 @@
                     type="text"
                     readOnly="true"
                     class="db-readonly-input"
-                    :value="selectedItem.mindmapSettings.opacityText"
+                   v-model="selectedItem.mindmapSettings.opacityText"
                   />
                 </div>
               </div>
@@ -1079,16 +1094,16 @@
               <div class="row db-prop-header-text">Text Style</div>
               <div class="row db-prop-row">
                 <div class="col-xs-8 db-col-left">
-                  <ejs-dropdownlist height="34px" :dataSource="dropDownDataSources.fontFamilyList" :value="selectedItem.mindmapSettings.fontFamily"
+                  <ejs-dropdownlist height="34px" :dataSource="dropDownDataSources.fontFamilyList" v-model="selectedItem.mindmapSettings.fontFamily"
                                 :fields="dropdownListFields"></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox min="1" step="1"  :value="selectedItem.mindmapSettings.fontSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.mindmapSettings.fontSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
                 <div class="col-xs-6 db-col-left">
-                  <ejs-toolbar overflowMode="Scrollable" v-on:click="mindmapPropertyBinding.mindmapTextStyleChange($event)">
+                  <ejs-toolbar overflowMode="Scrollable" v-on:clicked="mindmapPropertyBinding.mindmapTextStyleChange($event)">
                     <e-items>
                       <e-item
                         prefixIcon="sf-icon-Bold tb-icons"
@@ -1115,7 +1130,8 @@
                         id="mindmapTextColor"
                         mode="Palette"
                         type="color"
-                        :value="selectedItem.mindmapSettings.fontColor"
+                        :showButtons="false"
+                        v-model="selectedItem.mindmapSettings.fontColor"
                       ></ejs-colorpicker>
                     </div>
                     <div class="db-color-btn">
@@ -1133,7 +1149,7 @@
                   <span class="db-prop-text-style">Opacity</span>
                 </div>
                 <div class="col-xs-8 db-col-left" style="padding-right: 10px">
-                  <ejs-slider min="0" max="100" step="10" type="MinRange"  :value="selectedItem.mindmapSettings.textOpacity">
+                  <ejs-slider min="0" max="100" step="10" type="MinRange"  v-model="selectedItem.mindmapSettings.textOpacity">
                   </ejs-slider>
                 </div>
                 <div class="col-xs-2 db-col-right">
@@ -1141,7 +1157,7 @@
                     type="text"
                     class="db-readonly-input"
                     readOnly="true"
-                    :value="selectedItem.mindmapSettings.textOpacityText"
+                    v-model="selectedItem.mindmapSettings.textOpacityText"
                   />
                 </div>
               </div>
@@ -1153,7 +1169,7 @@
                   id="btnImportData"
                   content="Import Data"
                   cssClass="db-btn-primary"
-                  v-on:click="btnImportClick($event)"
+                 v-on:click.native="btnImportClick($event)"
                 ></ejs-button>
               </div>
               <div class="db-prop-separator"></div>
@@ -1170,26 +1186,26 @@
                 <div class="col-xs-6 db-col-left">
                   <ejs-numerictextbox
                     id="orgHorizontalSpacing"
-                    min="25"
-                    step="1"
+                    :min="25"
+                    :step="1"
                     format="n0"
-                    value="50"
+                    :value="50"
                     v-on:change="orgChartPropertyBinding.orgChartSpacingChange($event)"
                   ></ejs-numerictextbox>
                 </div>
                 <div class="col-xs-6 db-col-right">
                   <ejs-numerictextbox
                     id="orgVerticalSpacing"
-                    min="25"
-                    step="1"
+                    :min="25"
+                    :step="1"
                     format="n0"
-                    value="50"
+                    :value="50"
                     v-on:change="orgChartPropertyBinding.orgChartSpacingChange($event)"
                   ></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
-                <ejs-toolbar id="orgChartAlignment" overflowMode="Scrollable" v-on:click="orgChartPropertyBinding.orgChartAligmentChange($event)">
+                <ejs-toolbar id="orgChartAlignment" overflowMode="Scrollable" v-on:clicked="orgChartPropertyBinding.orgChartAligmentChange($event)">
                   <e-items>
                     <e-item
                       prefixIcon="sf-icon-TextLeft tb-icons"
@@ -1310,76 +1326,8 @@
           </div>
         </div>
       </div>
-    </div>
-    <ejs-dialog
-      id="openTemplateDialog"
-      ref="openTemplateObj"
-      width="695px"
-      height="470px"
-      header="Create New Diagram"
-      :target="dlgTarget"
-      isModal="true"
-      :animationSettings="dialogAnimationSettings"
-      :showCloseIcon="true"
-      allowDragging="true"
-      :visible="dialogVisibility"
-    ></ejs-dialog>
-    <div
-      id="diagramTemplateDiv"
-      class="db-diagram-template-div"
-      style="display: none"
-    >
-      <div class="db-diagram-template-image-div">
-        <div class="db-diagram-template-image"></div>
-      </div>
-      <div class="db-diagram-template-text">
-        <span id="diagramTemplateText"></span>
-      </div>
-    </div>
-    <div id="diagramTemplateDiv1" style="display: none">
-      <div class="row">
-        <div class="col-xs-3 temp-left-pane">
-          <div class="row db-diagram-template-parent-text flowdiagram-template">
-            <span>Flow Chart</span>
-          </div>
-          <div class="row db-diagram-template-parent-text mindmap-template">
-            <span>Mind Map</span>
-          </div>
-          <div class="row db-diagram-template-parent-text orgchart-template">
-            <span>Org Chart</span>
-          </div>
-        </div>
-        <div
-          class="col-xs-9 diagramTemplates temp-right-pane"
-          style="padding-left: 0px; padding-right: 0px"
-        ></div>
-      </div>
-    </div>
+  </div>
 <ejs-dialog
-      id="saveDialog"
-      ref="saveDialogObj"
-      width="335px"
-      header="Save Diagram"
-      :target="dlgTarget"
-      isModal="true"
-      :animationSettings="dialogAnimationSettings"
-      showCloseIcon="true"
-      allowDragging="true"
-      :visible="dialogVisibility"
-      :buttons="saveButtons"
-    >
-    
-        <div id="saveDialogContent">
-          <div class="row">
-            <div class="row">File Name</div>
-            <div class="row db-dialog-child-prop-row">
-              <input type="text" id="saveFileName" value="Diagram1" />
-            </div>
-          </div>
-        </div>
-      
-    </ejs-dialog>
-  <ejs-dialog
       id="exportDialog"
       ref="exportDialogObj"
       width="400px"
@@ -1391,19 +1339,18 @@
       showCloseIcon="true"
       :buttons="exportingButtons"
     >
-      
         <div id="exportDialogContent">
           <div class="row">
             <div class="row">File Name</div>
             <div class="row db-dialog-child-prop-row">
-              <input type="text" id="exportfileName"  v-on:click="selectedItem.exportSettings.fileName"/>
+              <input type="text" id="exportfileName"  value ="Untitled Diagram ">
             </div>
           </div>
           <div class="row db-dialog-prop-row">
             <div class="col-xs-6 db-col-left">
               <div class="row">Format</div>
               <div class="row db-dialog-child-prop-row">
-                <ejs-dropdownlist id="exportFormat" :value="selectedItem.exportSettings.format" :dataSource="dropDownDataSources.fileFormats"
+                <ejs-dropdownlist id="exportFormat"    :value="selectedItem.exportSettings.format" :dataSource="dropDownDataSources.fileFormats"
                             :fields="dropdownListFields">
                         </ejs-dropdownlist>
               </div>
@@ -1418,11 +1365,10 @@
             </div>
           </div>
         </div>
-      
-    </ejs-dialog>
-        <ejs-dialog
+</ejs-dialog>
+<ejs-dialog
       id="printDialog"
-      ref="printDialogObj"
+      ref="printDialog"
       width="335px"
       header="Print Diagram"
       :target="dlgTarget"
@@ -1493,214 +1439,14 @@
           </div>
         </div>
       
-    </ejs-dialog>
-    <ejs-dialog id="tooltipDialog" ref="tooltipDialogObj" width="335px" header="Edit Tooltip" :target="dlgTarget" isModal="true" :animationSettings="dialogAnimationSettings"
-    :visible="dialogVisibility" :buttons="tooltipButtons" showCloseIcon="true">
-    
-        <div id="tooltipDialogContent">
-            <div class="row">
-                <div>
-                    <textarea id="objectTooltip" style="resize: none; width: 100%; height: 120px;"></textarea>
-                </div>
-            </div>
-        </div>
-   
 </ejs-dialog>
-<ejs-dialog id="themeDialog"  width="174px" header="Themes" :target="dlgTarget" :isModal="isModalDialog" :animationSettings="dialogAnimationSettings"
-    allowDragging="true" :visible="dialogVisibility" showCloseIcon="true" :position="themesdialogPosition" :close="closeThemeDialog"
-    :created="themeDialogCreated">
-  
-        <div id="themeDialogContent">
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme1">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme2">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme3">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme4">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme5">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme6">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme7">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme8">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme9">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme10">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme11">
-                    </div>
-                </div>
-                <div class="db-theme-style-div">
-                    <div class="db-theme-style theme12">
-                    </div>
-                </div>
-            </div>
-        </div>
-   
-</ejs-dialog>
-<ejs-dialog
-      id="moreShapesDialogContent"
-      ref="moreShapesDialogObj"
-      width="695px"
-      height="470px"
-      header="Shapes"
-      target="dlgTarget"
-      isModal="true"
-      :animationSettings="dialogAnimationSettings"
-      showCloseIcon="true"
-      allowDragging="true"
-      :visible="dialogVisibility"
-      :buttons="moreShapesButtons"
-    >
-      
-        <div id="moreShapesDialogContent">
-          <div class="row">
-            <div class="col-xs-3 temp-left-pane">
-              <ejs-listview id="moreShapesList" ref="moreShapesList" :fields="listViewFields" :dataSource="dropDownDataSources.listViewData" 
-                        showCheckBox="true" v-on:select="listViewSelectionChange($event)">
-              </ejs-listview>
-            </div>
-            <div
-              class="col-xs-9 diagramTemplates temp-right-pane"
-              style="padding-left: 0px; padding-right: 0px"
-            >
-              <img
-                id="shapePreviewImage"
-                src="./assets/dbstyle/shapes_images/flow.png"
-              />
-            </div>
-          </div>
-        </div>
-     
-    </ejs-dialog>
-  <ejs-dialog id="layerDialog" width="300px" height="400px" header="Layers" :target="dlgTarget" :isModal="isModalDialog"
-    :animationSettings="dialogAnimationSettings" allowDragging="true" :visible="dialogVisibility" :footerTemplate="layerFooterTemplate">
-</ejs-dialog>
-<ejs-dialog id="hyperlinkDialog" width="400px" header="Insert Link" :target="dlgTarget" isModal="true"
-    :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="hyperlinkButtons" showCloseIcon="true">
-    
-        <div id="hyperlinkDialogContent">
-            <div class="row">
-                <div class="row">Enter URL</div>
-                <div class="row db-dialog-child-prop-row">
-                    <input type="text" id="hyperlink">
-                </div>
-            </div>
-            <div class="row db-dialog-prop-row">
-                <div class="row">Link Text (Optional)</div>
-                <div class="row db-dialog-child-prop-row">
-                    <input type="text" id="hyperlinkText">
-                </div>
-            </div>
-        </div>
-   
-</ejs-dialog>
-<div class="db-custom-prop-template" style="display:none">
-    <div class="row">
-        <div class="col-xs-6 db-col-left" style="width:70%">
-            <input class="txtPropertyName" type="text" placeholder="Enter Property Name" style="width:100%; height:27px">
-        </div>
-        <div class="col-xs-6 db-col-right" style="width:30%">
-            <button class="db-custom-prop-button" style="width:100%; text-transform: none;box-shadow: 0 0 0 0">Add Property</button>
-        </div>
-    </div>
-</div>
-<div class="db-custom-prop-info-template" style="display:none">
-    <div class="row">
-        <div class="col-xs-6 db-col-left propertyNameDiv">
-        </div>
-        <div class="col-xs-6 db-col-right propertyValueDiv">
-            <input type="text" class="propertyValue" style="height: 27px" />
-        </div>
-        <div class="propertyTooltipDiv">
-            <input type="checkbox" class="propertyCheckBox" />
-        </div>
-        <div class="propertyLabelDiv">
-            <button class="btnRemoveProperty" style="height: 20px; width: 27px"></button>
-        </div>
-    </div>
-</div>
-<div class="db-place-holder" style="display:none">
-    <div class="row">
-        <input type="checkbox" class="chkPlaceholders" />
-    </div>
-</div>
-<ejs-dialog id="customPropertyDialog"  width="500px" header="Additional Information" :target="dlgTarget"
-    :isModal="isModalDialog" :animationSettings="dialogAnimationSettings" allowDragging="true" showCloseIcon="true" :visible="dialogVisibility">
-</ejs-dialog>
-<div class="db-layer-template" style="display: none">
-    <div class="row">
-        <div class="db-layer-content-name">
-            <span class="db-layer-name"></span>
-            <input type="text" class="db-layer-edit" />
-        </div>
-        <div class="db-layer-content-btn">
-            <button class="db-layer-lock"></button>
-        </div>
-        <div class="db-layer-content-btn">
-            <button class="db-layer-visible"></button>
-        </div>
-        <!-- <div class="db-layer-content-btn" style="visibility: hidden">
-            <button class="db-layer-order-first"></button>
-        </div>
-        <div class="db-layer-content-btn">
-            <button class="db-layer-order-second"></button>
-        </div> -->
-    </div>
-</div>
-<ejs-dialog id="deleteConfirmationDialog"  width="400px" header="Delete Field" :target="dlgTarget"
-    isModal="true" :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="deleteConfirmationButtons"
-    showCloseIcon="true">
-    
-        <div id="deleteConfirmationContent">
-            <span style="font-size: 13px; color: black">
-                Please confirm that you want to delete this field?. All data will be lost for this field once you deleted.
-            </span>
-        </div>
-   
-</ejs-dialog>
-<ejs-dialog id="fileUploadDialog" width="500px" height="485px" header="Upload File" :target="dlgTarget"
+
+<ejs-dialog id="fileUploadDialog" ref="fileUploadDialog"  width="500px" height="485px" header="Upload File" :target="dlgTarget"
     isModal="true" :animationSettings="dialogAnimationSettings" :buttons="uploadButtons" showCloseIcon="true" allowDragging="true"
     :visible="dialogVisibility">
     
         <div id="uploadDialogContent" class="db-upload-content firstPage">
-            <ejs-tooltip :beforeRender="onTooltipBeforeRender" :created="tooltipCreated" :position="tooltipPosition">
+            <ejs-tooltip id="tooltip" :beforeRender="onTooltipBeforeRender"  :position="tooltipPosition">
                 <div id="uploadInformationDiv" class="row db-dialog-prop-row" style="margin-top: 0px;">
                     <div class="row">
                         <div class="row" style="font-size: 12px;font-weight: 500;color: black;">
@@ -1848,10 +1594,282 @@
                 </div>
             </ejs-tooltip>
         </div>
-  
 </ejs-dialog>
 
+<div id="diagramTemplateDiv" class="db-diagram-template-div" style="display: none">
+    <div class="db-diagram-template-image-div">
+        <div class="db-diagram-template-image">
+        </div>
+    </div>
+    <div class="db-diagram-template-text">
+        <span id="diagramTemplateText"></span>
+    </div>
 </div>
+
+<div id="diagramTemplateDiv1"  style="display: none">
+    <div class="row">
+        <div class="col-xs-3 temp-left-pane">
+            <div class="row db-diagram-template-parent-text flowdiagram-template" >
+                <span>Flow Chart</span>
+            </div>
+            <div class="row db-diagram-template-parent-text mindmap-template">
+                <span>Mind Map</span>
+            </div>
+            <div class="row db-diagram-template-parent-text orgchart-template">
+                <span>Org Chart</span>
+            </div>
+        </div>
+        <div class="col-xs-9 diagramTemplates temp-right-pane" style="padding-left:0px;padding-right:0px">
+        </div>
+    </div>
+</div>
+
+<ejs-dialog
+      id="openTemplateDialog"
+      ref="openTemplateDialog"
+      width="695px"
+      height="470px"
+      header="Create New Diagram"
+      :target="dlgTarget"
+      isModal="true"
+      :animationSettings="dialogAnimationSettings"
+      :showCloseIcon="true"
+      allowDragging="true"
+      :visible="dialogVisibility"
+></ejs-dialog>
+
+<ejs-dialog
+      id="saveDialog"
+      ref="saveDialog"
+      width="335px"
+      header="Save Diagram"
+      :target="dlgTarget"
+      isModal="true"
+      :animationSettings="dialogAnimationSettings"
+      showCloseIcon="true"
+      allowDragging="true"
+      :visible="dialogVisibility"
+      :buttons="saveButtons"
+    >
+    
+        <div id="saveDialogContent">
+          <div class="row">
+            <div class="row">File Name</div>
+            <div class="row db-dialog-child-prop-row">
+              <input type="text" id="saveFileName" value="Diagram1" />
+            </div>
+          </div>
+        </div>
+      
+</ejs-dialog>
+
+<ejs-dialog
+      id="moreShapesDialogContent"
+      ref="moreShapesDialog"
+      width="695px"
+      height="470px"
+      header="Shapes"
+      :target="dlgTarget"
+      isModal="true"
+      :animationSettings="dialogAnimationSettings"
+      showCloseIcon="true"
+      allowDragging="true"
+      :visible="dialogVisibility"
+      :buttons="moreShapesButtons"
+    >
+      
+        <div id="moreShapesDialogContent">
+          <div class="row">
+            <div class="col-xs-3 temp-left-pane">
+              <ejs-listview id="moreShapesList" ref="moreShapesList" :fields="listViewFields" :dataSource="dropDownDataSources.listViewData" 
+                        showCheckBox="true" v-on:select="listViewSelectionChange($event)">
+              </ejs-listview>
+            </div>
+            <div
+              class="col-xs-9 diagramTemplates temp-right-pane"
+              style="padding-left: 0px; padding-right: 0px"
+            >
+              <img
+                id="shapePreviewImage"
+                src="./assets/dbstyle/shapes_images/flow.png"
+              />
+            </div>
+          </div>
+        </div>
+     
+</ejs-dialog>
+      
+<ejs-dialog id="tooltipDialog" ref="tooltipDialog" width="335px" header="Edit Tooltip" :target="dlgTarget" isModal="true" :animationSettings="dialogAnimationSettings"
+    :visible="dialogVisibility" :buttons="tooltipButtons" showCloseIcon="true">
+    
+        <div id="tooltipDialogContent">
+            <div class="row">
+                <div>
+                    <textarea id="objectTooltip" style="resize: none; width: 100%; height: 120px;"></textarea>
+                </div>
+            </div>
+        </div>
+   
+</ejs-dialog>
+
+<ejs-dialog id="hyperlinkDialog" ref="hyperlinkDialog" width="400px" header="Insert Link" :target="dlgTarget" isModal="true"
+    :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="hyperlinkButtons" showCloseIcon="true">
+    
+        <div id="hyperlinkDialogContent">
+            <div class="row">
+                <div class="row">Enter URL</div>
+                <div class="row db-dialog-child-prop-row">
+                    <input type="text" id="hyperlink">
+                </div>
+            </div>
+            <div class="row db-dialog-prop-row">
+                <div class="row">Link Text (Optional)</div>
+                <div class="row db-dialog-child-prop-row">
+                    <input type="text" id="hyperlinkText">
+                </div>
+            </div>
+        </div>
+   
+</ejs-dialog>
+
+<div class="db-custom-prop-template" style="display:none">
+    <div class="row">
+        <div class="col-xs-6 db-col-left" style="width:70%">
+            <input class="txtPropertyName" type="text" placeholder="Enter Property Name" style="width:100%; height:27px">
+        </div>
+        <div class="col-xs-6 db-col-right" style="width:30%">
+            <button class="db-custom-prop-button" style="width:100%; text-transform: none;box-shadow: 0 0 0 0">Add Property</button>
+        </div>
+    </div>
+</div>
+
+<div class="db-custom-prop-info-template" style="display:none">
+    <div class="row">
+        <div class="col-xs-6 db-col-left propertyNameDiv">
+        </div>
+        <div class="col-xs-6 db-col-right propertyValueDiv">
+            <input type="text" class="propertyValue" style="height: 27px" />
+        </div>
+        <div class="propertyTooltipDiv">
+            <input type="checkbox" class="propertyCheckBox" />
+        </div>
+        <div class="propertyLabelDiv">
+            <button class="btnRemoveProperty" style="height: 20px; width: 27px"></button>
+        </div>
+    </div>
+</div>
+
+<div class="db-place-holder" style="display:none">
+    <div class="row">
+        <input type="checkbox" class="chkPlaceholders" />
+    </div>
+</div>
+
+<ejs-dialog id="customPropertyDialog"  width="500px" header="Additional Information" :target="dlgTarget"
+    isModal="true" :animationSettings="dialogAnimationSettings" allowDragging="true" showCloseIcon="true" :visible="dialogVisibility">
+</ejs-dialog>
+
+<div class="db-layer-template" style="display: none">
+    <div class="row">
+        <div class="db-layer-content-name">
+            <span class="db-layer-name"></span>
+            <input type="text" class="db-layer-edit" />
+        </div>
+        <div class="db-layer-content-btn">
+            <button class="db-layer-lock"></button>
+        </div>
+        <div class="db-layer-content-btn">
+            <button class="db-layer-visible"></button>
+        </div>
+    </div>
+</div>
+
+
+<ejs-dialog id="layerDialog" ref="layerDialog" isModal="true" width="300px" height="400px" header="Layers" :target="dlgTarget" 
+    :animationSettings="dialogAnimationSettings" allowDragging="true" :visible="dialogVisibility" :footerTemplate="layerFooterTemplate">
+</ejs-dialog>
+<div style="height: 100px;">
+<ejs-dialog id="themeDialog"  width="174px" header="Themes" :target="dlgTarget" :isModal="isModalDialog" :animationSettings="dialogAnimationSettings"
+    allowDragging="true" :visible="dialogVisibility" showCloseIcon="true" :position="themesdialogPosition" :close="closeThemeDialog"
+    :created="themeDialogCreated">
+  
+        <div id="themeDialogContent">
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme1">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme2">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme3">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme4">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme5">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme6">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme7">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme8">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme9">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme10">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme11">
+                    </div>
+                </div>
+                <div class="db-theme-style-div">
+                    <div class="db-theme-style theme12">
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+</ejs-dialog>
+</div>
+<ejs-dialog id="deleteConfirmationDialog"  width="400px" header="Delete Field" :target="dlgTarget"
+    isModal="true" :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="deleteConfirmationButtons"
+    showCloseIcon="true">
+    
+        <div id="deleteConfirmationContent">
+            <span style="font-size: 13px; color: black">
+                Please confirm that you want to delete this field?. All data will be lost for this field once you deleted.
+            </span>
+        </div>
+   
+</ejs-dialog>
+
 </div>
 </template>
 <script lang="ts">
@@ -1861,6 +1879,11 @@ import {
   DiagramPlugin,
   UndoRedo,
   SymbolPalettePlugin,
+  PortVisibility,
+  PortConstraints,
+  MouseEventArgs,
+  ConnectorEditing,
+  ComplexHierarchicalTree
 } from "@syncfusion/ej2-vue-diagrams";
 import { formatUnit, createElement, closest, Ajax } from "@syncfusion/ej2-base";
 import { UploaderComponent } from "@syncfusion/ej2-vue-inputs";
@@ -1980,6 +2003,12 @@ import {
   SelectEventArgs,
 } from "@syncfusion/ej2-vue-lists";
 
+import toolbarVue from './components/toolbarVue.vue';
+import orderVue from './components/orderVue.vue';
+import drawshapeVue from './components/drawshapeVue.vue'
+import drawConnectorVue from './components/drawConnectorVue.vue';
+
+
 Vue.use(DiagramPlugin);
 Vue.use(DropDownButtonPlugin);
 Vue.use(ToolbarPlugin);
@@ -2008,99 +2037,27 @@ let gridlines = {
   lineColor: "#EEEEEE",
   lineIntervals: interval,
 };
-let connectorSymbols = [
+let itemVue = Vue.component("itemTemplate", {
+  template: `<span class="db-ddl-template-style">{{data.className}}</span>`,
+  data() {
+    return {
+      data: {}
+    };
+  }
+});
 
-{
-
-id: "Link1",
-
-type: "Orthogonal",
-
-sourcePoint: { x: 0, y: 0 },
-
-targetPoint: { x: 40, y: 40 },
-
-targetDecorator: { shape: "Arrow", style: { fill: "black", strokeColor: "black" } },
-
-style: { strokeWidth: 2, strokeColor: "black" }
-
-},
-
-{
-
-id: "link3",
-
-type: "Orthogonal",
-
-sourcePoint: { x: 0, y: 0 },
-
-targetPoint: { x: 40, y: 40 },
-
-style: { strokeWidth: 2, strokeColor: "black" },
-
-targetDecorator: { shape: "None" }
-
-},
-
-{
-
-id: "Link21",
-
-type: "Straight",
-
-sourcePoint: { x: 0, y: 0 },
-
-targetPoint: { x: 40, y: 40 },
-
-targetDecorator: { shape: "Arrow", style: { fill: "black", strokeColor: "black" } },
-
-style: { strokeWidth: 2, strokeColor: "black" }
-
-},
-
-{
-
-id: "link23",
-
-type: "Straight",
-
-sourcePoint: { x: 0, y: 0 },
-
-targetPoint: { x: 40, y: 40 },
-
-style: { strokeWidth: 2, strokeColor: "black" },
-
-targetDecorator: { shape: "None" }
-
-},
-
-{
-
-id: "link33",
-
-type: "Bezier",
-
-sourcePoint: { x: 0, y: 0 },
-
-targetPoint: { x: 40, y: 40 },
-
-style: { strokeWidth: 2, strokeColor: "black" },
-
-targetDecorator: { shape: "None" }
-
-}
-
-];
-// window.onload = function(){
-//  debugger
-//   let diagramObj : any = document.getElementById("diagram");
-//   let diagram :Diagram= diagramObj.ej2_instances[0];
-  
-// }
+let valueVue = Vue.component("valueTemplate", {
+  template: `<span class ="db-ddl-template-style">{{data.className}}</span>`,
+  data() {
+    return {
+      data: {}
+    };
+  }
+});
 @Component({
   provide: {
-    diagram: [Diagram, UndoRedo, BpmnDiagrams,DiagramContextMenu, Snapping, DataBinding,PrintAndExport, HierarchicalTree, MindMapTree, ConnectorBridging, LayoutAnimation],
-    SymbolPalette: [BpmnDiagrams],
+    diagram: [Diagram, UndoRedo, BpmnDiagrams,DiagramContextMenu, ComplexHierarchicalTree, Snapping, DataBinding,PrintAndExport, HierarchicalTree, MindMapTree, ConnectorBridging, LayoutAnimation, ConnectorEditing ],
+    SymbolPalette: [BpmnDiagrams ],
   },
   beforeMount(){
 
@@ -2109,7 +2066,7 @@ targetDecorator: { shape: "None" }
 })
   
 export default class User extends Vue {
-  
+ 
   public animationSettings: MenuAnimationSettingsModel = { effect: "None" };
   public dropdownListFields: FieldSettingsModel = {
     text: "text",
@@ -2134,6 +2091,8 @@ export default class User extends Vue {
   public openTemplateDialog: DialogComponent;
   public toolbarEditor: ToolbarComponent;
   public moreShapesList: ListViewComponent;
+  // public btnDrawShape: DropDownButtonComponent;
+  // public btnDrawConnector: DropDownButtonComponent;
   public dlgTarget: HTMLElement = document.body;
   public dialogAnimationSettings: AnimationSettingsModel = { effect: "None" };
   public dialogPosition: PositionDataModel = { X: 100, Y: 112 };
@@ -2174,42 +2133,48 @@ export default class User extends Vue {
         window.addEventListener("load", this.onWindowLoad);
     }
   public onWindowLoad() {
-    
-    let diagramInstance: DiagramComponent;
-    let diagramObj: any = document.getElementById("diagram");
-    diagramInstance = diagramObj.ej2_instances[0];
+    let diagram: any = document.getElementById("diagram");
+    this.diagram = diagram.ej2_instances[0];
     let selectedItem : SelectorViewModel;
     let selectedItemObj:any = document.getElementById("diagram");
     selectedItem = selectedItemObj.ej2_instances[0];
-    let symbolpalette:SymbolPalette;
     let paletteObj: any = document.getElementById("symbolpalette");
-    symbolpalette = paletteObj.ej2_instances[0];
-    let openTemplate : DialogComponent;
-    let openTemplateObj:any = document.getElementById("openTemplateDialog");
-    openTemplate = openTemplateObj.ej2_instances[0];
-    let saveDialog : DialogComponent;
-    let saveDialogObj: any = document.getElementById("saveDialog");
-    saveDialog = saveDialogObj.ej2_instances[0];
-    let exportDialog : DialogComponent;
+    this.symbolpalette = paletteObj.ej2_instances[0];
+    let openTemplatedialog:any = document.getElementById("openTemplateDialog");
+    this.openTemplateDialog = openTemplatedialog.ej2_instances[0];
+    let tooltip : any = document.getElementById("tooltip");
+    this.tooltip = tooltip.ej2_instances[0];
+    let layerDialog: any = document.getElementById("layerDialog");
+    
+    this.layerDialog = layerDialog.ej2_instances[0];
+    let saveDialog: any = document.getElementById("saveDialog");
+    this.saveDialog = saveDialog.ej2_instances[0];
     let exportDialogObj : any = document.getElementById("exportDialog");
-    exportDialog = exportDialogObj.ej2_instances[0];
-    let printDialog : DialogComponent;
-    let printDialogObj : any = document.getElementById("printDialog");
-    printDialog = printDialogObj.ej2_instances[0];
-    let tooltipDialog : DialogComponent;
-    let tooltipDialogObj :any = document.getElementById("tooltipDialog");
-    tooltipDialog = tooltipDialogObj.ej2_instances[0];
-    // let tooltip : TooltipComponent;
-    // let tooltipObj : any = document.getElementById("tooltip");
-    // tooltip = tooltipObj.ej2_instances[0];
-    let themeDialog : DialogComponent
-    let themeDialogObj : any = document.getElementById("themeDialog");
-    themeDialog = themeDialogObj.ej2_instances[0];
-    let  moreShapesDialog :DialogComponent
-    let  moreShapesDialogObj : any = document.getElementById("moreShapesDialogContent");
-    moreShapesDialog =  moreShapesDialogObj.ej2_instances[0];
-    setTimeout(() => { this.generateDiagram(); }, 200);
-
+    this.exportDialog = exportDialogObj.ej2_instances[0];
+    let printDialog : any = document.getElementById("printDialog");
+    this.printDialog = printDialog.ej2_instances[0];
+    let tooltipDialog :any = document.getElementById("tooltipDialog");
+    this.tooltipDialog = tooltipDialog.ej2_instances[0];
+    let hyperlinkDialog: any = document.getElementById("hyperlinkDialog");
+    this.hyperlinkDialog = hyperlinkDialog.ej2_instances[0];
+    let fileUploadDialog: any=document.getElementById("fileUploadDialog");
+    this.fileUploadDialog = fileUploadDialog.ej2_instances[0];
+    let themeDialog : any = document.getElementById("themeDialog");
+    this.themeDialog = themeDialog.ej2_instances[0];
+    let  moreShapesDialogContent: any = document.getElementById("moreShapesDialogContent");
+    this.moreShapesDialog =  moreShapesDialogContent.ej2_instances[0];
+    let moreShapesList : any =document.getElementById("moreShapesList");
+    this.moreShapesList= moreShapesList.ej2_instances[0];
+    let defaultupload: any = document.getElementById("defaultfileupload");
+    this.defaultupload = defaultupload.ej2_instances[0];
+    let customPropertyDialog :  any = document.getElementById("customPropertyDialog");
+    this.customPropertyDialog = customPropertyDialog.ej2_instances[0];
+    // let btnDrawShape: any = document.getElementById(" btnDrawShape");
+    // this.btnDrawShape = btnDrawShape.ej2_instances[0];
+    // let btnDrawConnector :  any = document.getElementById("btnDrawConnector");
+    // this.btnDrawConnector = btnDrawConnector.ej2_instances[0];
+    // setTimeout(() => { this.generateDiagram(); }, 200);
+    this.generateDiagram();
     this.page.addNewPage();
     CommonKeyboardCommands.selectedItem = this.selectedItem;
     CommonKeyboardCommands.page = this.page;
@@ -2227,21 +2192,13 @@ export default class User extends Vue {
     (document.getElementById("btnHideToolbar") as any).onclick = this.hideMenuBar.bind(this);
     (document.getElementById("diagramContainerDiv") as any).onmouseleave = this.diagramThemes.setNodeOldStyles.bind(this.diagramThemes);
   
-        let context: any = this;
-        setTimeout(() => { context.loadPage(); }, 2000);
-        setInterval(() => { context.savePage(); }, 2000);
+        // let context: any = this;
+        setTimeout(() => { this.loadPage(); }, 2000);
+        setInterval(() => {this.savePage(); }, 2000);
 
         window.onbeforeunload = this.closeWindow.bind(this);
 
         }
-public palette= [
-{
-id: "connectors",
-expanded: true,
-symbols: connectorSymbols,
-title: "Connectors"
-}
-];
   public width = "100%";
   public height = "100%";
   public palettewidth = "100%";
@@ -2253,6 +2210,39 @@ title: "Connectors"
     verticalGridlines: gridlines,
     constraints: SnapConstraints.All & ~SnapConstraints.SnapToLines,
   };
+  public close()
+  {
+    debugger
+  }
+  public itemVue()
+  {
+    return {template: itemVue};
+  }
+  public valueVue()
+  {
+   return {template: valueVue}; 
+  }
+   public toolbarTemplate() {
+            return {
+                template: toolbarVue
+            }
+   };
+   public drawShapeTemplate() {
+            return {
+                template: drawshapeVue
+            }
+   };
+  public drawConnectorTemplate() {
+            return {
+                template: drawConnectorVue
+            }
+   };
+  public orderTemplate() {
+            return {
+                template: orderVue
+            }
+  };
+
   public pageSettings: PageSettingsModel = {
     background: { color: "white" },
     width: 816,
@@ -2276,6 +2266,21 @@ title: "Connectors"
                 node.style.fill = "white";
             }
         }
+          if(!((this.selectedItem as any).diagramType ==="MindMap" || (this.selectedItem as any).diagramType === 'OrgChart' || (this.selectedItem as any).diagramType === 'FlowChart')){
+
+        node.width=100;
+
+        node.height=40;
+
+    }
+        if(!((this.selectedItem as any).diagramType==="MindMap")||((this.selectedItem as any).diagramType==="OrgChart")){
+           node.ports = [
+                { offset: { x: 0, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw | PortConstraints.Default},
+                { offset: { x: 0.5, y: 0 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw | PortConstraints.Default},
+                { offset: { x: 1, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw | PortConstraints.Default},
+                { offset: { x: 0.5, y: 1 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw | PortConstraints.Default}
+            ];
+        }
         let node1: NodeModel = {
             style: { strokeWidth: 2 }
         };
@@ -2284,6 +2289,7 @@ title: "Connectors"
 
     public setConnectorDefaults(connector: Connector, diagram: Diagram): ConnectorModel {
         let connector1: ConnectorModel = {
+         
             annotations: [
                 { content: "", style: { fill: "transparent" } }
             ],
@@ -2354,7 +2360,6 @@ title: "Connectors"
         }
     }
     public loadPage(): void {
-      debugger
         (document.getElementsByClassName("diagrambuilder-container")[0] as HTMLDivElement).style.display = "";
         this.selectedItem.selectedDiagram.updateViewPort();
         this.overview = new Overview({ width: "255px", height: "200px", sourceID: "diagram" });
@@ -2363,10 +2368,9 @@ title: "Connectors"
         document.getElementsByClassName("sidebar")[0].className = "sidebar";
         if (window.location.search.length === 0) {
             this.selectedItem.uniqueId = this.selectedItem.randomIdGenerator();
-            // (document.getElementsByClassName("sb-content-overlay")[0] as any).style.display = "none";
+            (document.getElementsByClassName("sb-content-overlay")[0] as any).style.display = "none";
             this.openTemplateDialog.show();
-            (this.openTemplateDialog as any).content = this.selectedItem.utilityMethods.getDefaultDiagramTemplates1(this.selectedItem);
-            
+           (this.openTemplateDialog as any).content = this.selectedItem.utilityMethods.getDefaultDiagramTemplates1(this.selectedItem );
             (this.diagram as any).layers[0].addInfo = { 'name': 'Layer0' }
         } 
         this.selectedItem.exportSettings.fileName = (document.getElementById("diagramName") as any).innerHTML;
@@ -2447,10 +2451,10 @@ title: "Connectors"
         });
         break;
       case "showrulers":
-       ( (this.selectedItem as any).selectedDiagram ).rulerSettings.showRulers =
-          ((!this.selectedItem as any).selectedDiagram ).rulerSettings.showRulers;
-        if (((this.selectedItem as any).selectedDiagram ).rulerSettings.showRulers) {
-          ((this.selectedItem as any).selectedDiagram ).rulerSettings.dynamicGrid = false;
+       this.selectedItem.selectedDiagram.rulerSettings.showRulers =
+          !this.selectedItem.selectedDiagram.rulerSettings.showRulers;
+        if (this.selectedItem.selectedDiagram .rulerSettings.showRulers) {
+          this.selectedItem.selectedDiagram .rulerSettings.dynamicGrid = false;
         }
         args.item.iconCss = args.item.iconCss ? "" : "sf-icon-Selection";
         container = document.getElementsByClassName(
@@ -2493,6 +2497,9 @@ title: "Connectors"
         );
         args.item.iconCss = args.item.iconCss ? "" : "sf-icon-Selection";
         break;
+      case 'showlayers':
+          this.showHideLayers();
+            break;
       case "themes":
         this.showHideThemes();
         break;
@@ -2509,48 +2516,46 @@ title: "Connectors"
     }
     diagram.dataBind();
   }
-
-
-    public zoomChange(args: MenuEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-        if (args.item.text === "Custom") {
-            let ss: string = "";
-        } else if (args.item.text === "Fit To Screen") {
-            this.selectedItem.scrollSettings.currentZoom = "Fit ...";
-            diagram.fitToPage({ mode: "Page", region: "Content", margin: { left: 0, top: 0, right: 0, bottom: 0 } });
-        } else {
-            let currentZoom: any = diagram.scrollSettings.currentZoom;
-            let zoom: ZoomOptions = {};
-            switch (args.item.text) {
-                case "400%":
-                    zoom.zoomFactor = (4 / currentZoom) - 1;
-                    break;
-                case "300%":
-                    zoom.zoomFactor = (3 / currentZoom) - 1;
-                    break;
-                case "200%":
-                    zoom.zoomFactor = (2 / currentZoom) - 1;
-                    break;
-                case "150%":
-                    zoom.zoomFactor = (1.5 / currentZoom) - 1;
-                    break;
-                case "100%":
-                    zoom.zoomFactor = (1 / currentZoom) - 1;
-                    break;
-                case "75%":
-                    zoom.zoomFactor = (0.75 / currentZoom) - 1;
-                    break;
-                case "50%":
-                    zoom.zoomFactor = (0.5 / currentZoom) - 1;
-                    break;
-                case "25%":
-                    zoom.zoomFactor = (0.25 / currentZoom) - 1;
-                    break;
-            }
-            ((this.selectedItem as any).scrollSettings).currentZoom = args.item.text;
-            diagram.zoomTo(zoom);
-        }
-    }
+    // public zoomChange(args: MenuEventArgs): void {
+    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+    //     if (args.item.text === "Custom") {
+    //         let ss: string = "";
+    //     } else if (args.item.text === "Fit To Screen") {
+    //         this.selectedItem.scrollSettings.currentZoom = "Fit ...";
+    //         diagram.fitToPage({ mode: "Page", region: "Content", margin: { left: 0, top: 0, right: 0, bottom: 0 } });
+    //     } else {
+    //         let currentZoom: any = diagram.scrollSettings.currentZoom;
+    //         let zoom: ZoomOptions = {};
+    //         switch (args.item.text) {
+    //             case "400%":
+    //                 zoom.zoomFactor = (4 / currentZoom) - 1;
+    //                 break;
+    //             case "300%":
+    //                 zoom.zoomFactor = (3 / currentZoom) - 1;
+    //                 break;
+    //             case "200%":
+    //                 zoom.zoomFactor = (2 / currentZoom) - 1;
+    //                 break;
+    //             case "150%":
+    //                 zoom.zoomFactor = (1.5 / currentZoom) - 1;
+    //                 break;
+    //             case "100%":
+    //                 zoom.zoomFactor = (1 / currentZoom) - 1;
+    //                 break;
+    //             case "75%":
+    //                 zoom.zoomFactor = (0.75 / currentZoom) - 1;
+    //                 break;
+    //             case "50%":
+    //                 zoom.zoomFactor = (0.5 / currentZoom) - 1;
+    //                 break;
+    //             case "25%":
+    //                 zoom.zoomFactor = (0.25 / currentZoom) - 1;
+    //                 break;
+    //         }
+    //         ((this.selectedItem as any).scrollSettings).currentZoom = args.item.text;
+    //         diagram.zoomTo(zoom);
+    //     }
+    // }
 
   public beforeItemRender(args: MenuEventArgs): void {
         let shortCutText: string = this.getShortCutKey((args.item as any).text);
@@ -2802,6 +2807,25 @@ title: "Connectors"
         }
         return null;
     }
+  public SegmentEditing(args:any){
+     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+    if(diagram.selectedItems.connectors){
+      if(args.checked == true){
+        for(let i=0;i<diagram.selectedItems.connectors.length;i++){
+          let connector: any = (diagram.selectedItems as any).connectors[i];
+          connector.constraints = ConnectorConstraints.DragSegmentThumb | ConnectorConstraints.Default ;
+        }
+      }     
+    else
+    {
+      for(let i=0;i<diagram.selectedItems.connectors.length;i++){
+      let connector: any = (diagram.selectedItems as any).connectors[i];
+      connector.constraints = ConnectorConstraints.Default & ~(ConnectorConstraints.DragSegmentThumb);
+      }
+    }
+    diagram.dataBind();
+  }
+}
   public collectionChange(args: ICollectionChangeEventArgs): void {
         if (this.selectedItem.diagramType === "GeneralDiagram") {
             if (args.state === "Changed" && args.type === "Addition" &&
@@ -3046,7 +3070,7 @@ title: "Connectors"
         }
     }
     public listViewSelectionChange(args: SelectEventArgs): void {
-        (document.getElementById("shapePreviewImage") as HTMLImageElement).src = "./assets/dbstyle/shapes_images/" + args.text.toLowerCase() + ".png";
+        (document.getElementById("shapePreviewImage") as any).src="./assets/dbstyle/shapes_images/" + args.text.toLowerCase() + '.png';
     }
     private btnUploadNext(args:MouseEvent): void {
         const target: any = args.target;
@@ -3124,7 +3148,7 @@ title: "Connectors"
                 this.fileUploadDialog.hide();
                 OrgChartUtilityMethods.isUploadSuccess = false;
                 break;
-            case "moreShapesDialog":
+            case "moreShapesDialogContent":
                 this.moreShapesDialog.hide();
                 break;
         }
@@ -3170,8 +3194,9 @@ title: "Connectors"
     CommonKeyboardCommands.download(this.page.savePage(), (document.getElementById("saveFileName") as HTMLInputElement).value);
       this.saveDialog.hide();
   }
-  private registerBrowseEvent = false;
+    private registerBrowseEvent = false;
     public btnImportClick(args: MouseEvent): void {
+      //  (document.getElementById("btnImportData") as any).onclick = () => {
         if (!this.registerBrowseEvent) {
             (this.defaultupload as any).dropArea = document.getElementById("dropRegion");
             (document.getElementById("browseFile") as any).onclick = () => {
@@ -3210,25 +3235,28 @@ title: "Connectors"
         } else if (args.item.text === "Bezier") {
             diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 2 } };
         }
+        // else if (args.item.text === "Free Hand") {
+        //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 2 } };
+        // }
         diagram.tool = DiagramTools.ContinuousDraw;
         diagram.clearSelection();
         this.removeSelectedToolbarItem();
         (document.getElementById("btnDrawConnector") as any).classList.add("tb-item-selected");
     }
-    public orderCommandsChange(args: MenuEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-        if (args.item.text === "Send To Back") {
-            this.sendToBack();
-        } else if (args.item.text === "Bring To Front") {
-            this.bringToFront();
-        } else if (args.item.text === "Bring Forward") {
-            this.selectedItem.isModified = true;
-            diagram.moveForward();
-        } else if (args.item.text === "Send Backward") {
-            this.selectedItem.isModified = true;
-            diagram.sendBackward();
-        }
-    }
+    // public orderCommandsChange(args: MenuEventArgs): void {
+    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+    //     if (args.item.text === "Send To Back") {
+    //         this.sendToBack();
+    //     } else if (args.item.text === "Bring To Front") {
+    //         this.bringToFront();
+    //     } else if (args.item.text === "Bring Forward") {
+    //         this.selectedItem.isModified = true;
+    //         diagram.moveForward();
+    //     } else if (args.item.text === "Send Backward") {
+    //         this.selectedItem.isModified = true;
+    //         diagram.sendBackward();
+    //     }
+    // }
      public contextMenuClick(args: ContextMenuEventArgs): void {
         let buttonElement: any = document.getElementsByClassName("e-btn-hover")[0];
         if (buttonElement) {
@@ -3297,7 +3325,6 @@ title: "Connectors"
         }
     }
     private generateDiagram(): void {
-      debugger
         let diagramInstance: DiagramComponent;
         let diagramObj: any = document.getElementById("diagram");
         diagramInstance = diagramObj.ej2_instances[0];
@@ -3592,4 +3619,3 @@ public onUploadFailure(args: { [key: string]: Object }): void {
     }
   }
 </script>
-

@@ -50,6 +50,7 @@ export class DiagramBuilderLayer {
             }
         }
         (this.layerDialog as any).content  = layerDialogContent.outerHTML;
+        this.layerDialog.dataBind();
         this.triggerEvents();
     }
 
@@ -280,7 +281,7 @@ export class DiagramBuilderLayer {
                 'name': 'Untitled_Layer' + this.layerCount1
             }
         };
-        (this.selectedItem as any).selectedDiagram.addLayer(layer);
+        this.selectedItem.selectedDiagram.addLayer(layer);
         this.getLayerDialogContent();
         this.layerCount1++;
     }

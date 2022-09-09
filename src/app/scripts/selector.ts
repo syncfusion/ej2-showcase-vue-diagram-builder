@@ -109,7 +109,7 @@ export class NodeProperties {
     }
   }
 
-  private m_strokeWidth = 1;
+  private m_strokeWidth = 0;
   public get strokeWidth(): number {
     return this.m_strokeWidth;
   }
@@ -874,7 +874,7 @@ export class SelectorViewModel {
                 node.style.strokeColor = this.getColor(this.nodeProperties.strokeColor);
                 break;
             case "strokewidth":
-                node.style.strokeWidth = this.nodeProperties.strokeWidth;
+              (node as any).style.strokeWidth = this.nodeProperties.strokeWidth;
                 break;
             case "strokestyle":
                 node.style.strokeDashArray = this.nodeProperties.strokeStyle;
