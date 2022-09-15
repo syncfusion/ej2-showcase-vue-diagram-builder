@@ -257,9 +257,17 @@ export class DiagramClientSideEvents {
 
     public dragEnter(args: IDragEnterEventArgs): void {
         let obj: NodeModel = args.element as NodeModel;
+        
+        obj.width = 75;
+        // obj.height= 80;
         let ratio: number = 100 / (obj as any).width;
-        obj.width = 100;
         (obj as any).height *= ratio;
+        // if(args.element)
+        // {
+        //     let diagram :Diagram = this.selectedItem.selectedDiagram ;
+        //     this.selectedItem.nodeProperties.aspectRatio= false;
+        //     diagram.dataBind();
+        // }
     }
 
     public historyChange(args: IHistoryChangeArgs): void {
@@ -283,6 +291,7 @@ export class DiagramPropertyBinding {
     constructor(selectedItem: SelectorViewModel, page: PageCreation) {
         this.selectedItem = selectedItem;
         this.page = page;
+
     }
 
     public pageBreaksChange(args: CheckBoxChangeEventArgs): void {

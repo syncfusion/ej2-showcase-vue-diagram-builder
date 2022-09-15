@@ -181,7 +181,7 @@ export class Palettes {
         { id: 'connectors', expanded: false, symbols: this.getConnectors(), title: 'Connectors' }
     ];
     public expandMode: ExpandMode = 'Multiple';
-    public symbolPreview: SymbolPreviewModel = { height: 50, width: 50 };
+    public symbolPreview: SymbolPreviewModel = { height: 30, width: 30 };
 
     public enableSearch: boolean = true;
     public symbolMargin: MarginModel = { left: 12, right: 12, top: 12, bottom: 12 };
@@ -193,7 +193,7 @@ export class Palettes {
     public setPaletteNodeDefaults(node: NodeModel): void {
         if (!(node.addInfo && (node.addInfo as { [key: string]: any }).type === 'CustomShapes') && (!node.children)) {
             if (node.id === 'Terminator' || node.id === 'Process') {
-                node.width = 50;
+                node.width = 100;
                 node.height = 50;
             } else {
                 node.width = 50;

@@ -316,8 +316,8 @@
               :dragEnter="this.diagramEvents.dragEnter.bind(this.diagramEvents)"
               :historyChange="this.diagramEvents.historyChange.bind(this.diagramEvents)"
               :scrollChange="this.diagramEvents.scrollChange.bind(this.diagramEvents)"
-              :collectionChange="collectionChange"
-              :drop="drop"
+              :collectionChange="this.collectionChange"
+              :drop="this.drop"
               :getCustomTool="getCustomTool"
               :textEdit="diagramEvents.textEdit.bind(this.diagramEvents)"
               backgroundColor="transparent"
@@ -448,7 +448,7 @@
                         <ejs-numerictextbox
                           id="nodeOffsetX"
                           format="n0"
-                           v-model="selectedItem.nodeProperties.offsetX"
+                         v-model="selectedItem.nodeProperties.offsetX"
                         ></ejs-numerictextbox>
                       </div>
                     </div>
@@ -477,7 +477,6 @@
                       <div class="db-text-input">
                         <ejs-numerictextbox
                           id="nodeWidth"
-                          min="1"
                           format="n0"
                            v-model="selectedItem.nodeProperties.width"
                         ></ejs-numerictextbox>
@@ -505,7 +504,8 @@
                     <ejs-checkbox
                       id="aspectRatio"
                       label="Aspect Ratio"
-                       v-model="selectedItem.nodeProperties.aspectRatio"
+                     :checked="false"
+                     v-on:change="nodeaspectratiochange"
                     ></ejs-checkbox>
                   </div>
                 </div>
@@ -655,15 +655,12 @@
                     </div>
                     <div class="col-xs-4 db-col-center">
                       <ejs-dropdownlist id="nodeBorderStyle" v-model="selectedItem.nodeProperties.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
-                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate" :close="close">
-                                                                    
+                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate">
                       </ejs-dropdownlist>
-                        
                     </div>
                     <div class="col-xs-4 db-col-right">
                       <ejs-numerictextbox
                         id="nodeStrokeWidth"
-                        :min="0"
                         :step="0.5"
                         v-model="selectedItem.nodeProperties.strokeWidth"
                       ></ejs-numerictextbox>
@@ -746,19 +743,12 @@
               </div>
               <div class="row">
                 <div class="col-xs-8 db-col-left">
-                  <ejs-dropdownlist id="lineStyle" 
-                        :dataSource="dropDownDataSources.borderStyles"
-                                    :fields="dropdownListFields" >
-                      <template v-slot:itemTemplate="{data}">
-                          <div class="db-ddl-template-style">{{data.className}}</div>
-                      </template>                                         
-                      <template v-slot:valueTemplate="{data}">
-                          <div class="db-ddl-template-style"> {{data.className}}</div>
-                      </template>  
-                  </ejs-dropdownlist>
+                  <ejs-dropdownlist id="lineStyle" v-model="selectedItem.nodeProperties.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
+                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate">
+                      </ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox :min="0.5" :step="0.5" v-model="selectedItem.connectorProperties.lineWidth"></ejs-numerictextbox>
+                  <ejs-numerictextbox :min="0.5" :step="0.5" id="lineWidth" v-model="selectedItem.connectorProperties.lineWidth"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -775,7 +765,7 @@
                                     :fields="dropdownListFields"></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.connectorProperties.sourceSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox  :step="1" id="sourceSize" v-model="selectedItem.connectorProperties.sourceSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -792,7 +782,7 @@
                                     fields="dropdownListFields"></ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.connectorProperties.targetSize"></ejs-numerictextbox>
+                  <ejs-numerictextbox  :step="1" id="targetSize" v-model="selectedItem.connectorProperties.targetSize"></ejs-numerictextbox>
                 </div>
               </div>
               <div class="row db-prop-row">
@@ -1057,9 +1047,9 @@
                   </div>
                 </div>
                 <div class="col-xs-4 db-col-center">
-                  <ejs-dropdownlist v-model="selectedItem.mindmapSettings.strokeStyle" :dataSource="dropDownDataSources.borderStyles" :fields="dropdownListFields" popupWidth="160px">
-                    
-                  </ejs-dropdownlist>
+                  <ejs-dropdownlist v-model="selectedItem.mindmapSettings.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
+                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate">
+                      </ejs-dropdownlist>
                 </div>
                 <div class="col-xs-4 db-col-right">
                   <ejs-numerictextbox :min="0.5" :step="0.5" v-model="selectedItem.mindmapSettings.strokeWidth"></ejs-numerictextbox>
@@ -1092,15 +1082,17 @@
               </div>
               <div style="margin-top: 10px; margin-bottom: 15px"></div>
               <div class="row db-prop-header-text">Text Style</div>
-              <div class="row db-prop-row">
-                <div class="col-xs-8 db-col-left">
-                  <ejs-dropdownlist height="34px" :dataSource="dropDownDataSources.fontFamilyList" v-model="selectedItem.mindmapSettings.fontFamily"
-                                :fields="dropdownListFields"></ejs-dropdownlist>
-                </div>
-                <div class="col-xs-4 db-col-right">
-                  <ejs-numerictextbox :min="1" :step="1" v-model="selectedItem.mindmapSettings.fontSize"></ejs-numerictextbox>
-                </div>
-              </div>
+               <div class="row db-prop-row">
+                        <div class="col-xs-8 db-col-left">
+                            <ejs-dropdownlist height='34px' :dataSource='dropDownDataSources.fontFamilyList' v-model='selectedItem.mindmapSettings.fontFamily'
+                                :fields='dropdownListFields'>
+                            </ejs-dropdownlist>
+                        </div>
+                        <div class="col-xs-4 db-col-right">
+                            <ejs-numerictextbox :min="1" :step="1"  v-model="selectedItem.mindmapSettings.fontSize"></ejs-numerictextbox>
+                             <!-- <ejs-numerictextbox :min="0.5" :step="0.5" v-model="selectedItem.mindmapSettings.strokeWidth"></ejs-numerictextbox> -->
+                        </div>
+                    </div>
               <div class="row db-prop-row">
                 <div class="col-xs-6 db-col-left">
                   <ejs-toolbar overflowMode="Scrollable" v-on:clicked="mindmapPropertyBinding.mindmapTextStyleChange($event)">
@@ -1377,8 +1369,7 @@
       :visible="dialogVisibility"
       showCloseIcon="true"
       :buttons="printingButtons"
-    >
-     
+    > 
         <div id="printDialogContent">
           <div class="row">
             <div class="row">Region</div>
@@ -1437,14 +1428,11 @@
           <div class="row db-dialog-prop-row" style="margin-top: 16px">
             <ejs-checkbox id="printMultiplePage" label="Scale to fit 1 page" :checked="selectedItem.printSettings.multiplePage"></ejs-checkbox>
           </div>
-        </div>
-      
+        </div>   
 </ejs-dialog>
-
 <ejs-dialog id="fileUploadDialog" ref="fileUploadDialog"  width="500px" height="485px" header="Upload File" :target="dlgTarget"
     isModal="true" :animationSettings="dialogAnimationSettings" :buttons="uploadButtons" showCloseIcon="true" allowDragging="true"
     :visible="dialogVisibility">
-    
         <div id="uploadDialogContent" class="db-upload-content firstPage">
             <ejs-tooltip id="tooltip" :beforeRender="onTooltipBeforeRender"  :position="tooltipPosition">
                 <div id="uploadInformationDiv" class="row db-dialog-prop-row" style="margin-top: 0px;">
@@ -1595,7 +1583,6 @@
             </ejs-tooltip>
         </div>
 </ejs-dialog>
-
 <div id="diagramTemplateDiv" class="db-diagram-template-div" style="display: none">
     <div class="db-diagram-template-image-div">
         <div class="db-diagram-template-image">
@@ -1605,7 +1592,6 @@
         <span id="diagramTemplateText"></span>
     </div>
 </div>
-
 <div id="diagramTemplateDiv1"  style="display: none">
     <div class="row">
         <div class="col-xs-3 temp-left-pane">
@@ -1623,7 +1609,6 @@
         </div>
     </div>
 </div>
-
 <ejs-dialog
       id="openTemplateDialog"
       ref="openTemplateDialog"
@@ -1637,7 +1622,6 @@
       allowDragging="true"
       :visible="dialogVisibility"
 ></ejs-dialog>
-
 <ejs-dialog
       id="saveDialog"
       ref="saveDialog"
@@ -1651,7 +1635,6 @@
       :visible="dialogVisibility"
       :buttons="saveButtons"
     >
-    
         <div id="saveDialogContent">
           <div class="row">
             <div class="row">File Name</div>
@@ -1662,7 +1645,6 @@
         </div>
       
 </ejs-dialog>
-
 <ejs-dialog
       id="moreShapesDialogContent"
       ref="moreShapesDialog"
@@ -1676,8 +1658,7 @@
       allowDragging="true"
       :visible="dialogVisibility"
       :buttons="moreShapesButtons"
-    >
-      
+    > 
         <div id="moreShapesDialogContent">
           <div class="row">
             <div class="col-xs-3 temp-left-pane">
@@ -1695,13 +1676,10 @@
               />
             </div>
           </div>
-        </div>
-     
+        </div>   
 </ejs-dialog>
-      
 <ejs-dialog id="tooltipDialog" ref="tooltipDialog" width="335px" header="Edit Tooltip" :target="dlgTarget" isModal="true" :animationSettings="dialogAnimationSettings"
     :visible="dialogVisibility" :buttons="tooltipButtons" showCloseIcon="true">
-    
         <div id="tooltipDialogContent">
             <div class="row">
                 <div>
@@ -1709,12 +1687,9 @@
                 </div>
             </div>
         </div>
-   
 </ejs-dialog>
-
 <ejs-dialog id="hyperlinkDialog" ref="hyperlinkDialog" width="400px" header="Insert Link" :target="dlgTarget" isModal="true"
     :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="hyperlinkButtons" showCloseIcon="true">
-    
         <div id="hyperlinkDialogContent">
             <div class="row">
                 <div class="row">Enter URL</div>
@@ -1729,9 +1704,7 @@
                 </div>
             </div>
         </div>
-   
 </ejs-dialog>
-
 <div class="db-custom-prop-template" style="display:none">
     <div class="row">
         <div class="col-xs-6 db-col-left" style="width:70%">
@@ -1742,7 +1715,6 @@
         </div>
     </div>
 </div>
-
 <div class="db-custom-prop-info-template" style="display:none">
     <div class="row">
         <div class="col-xs-6 db-col-left propertyNameDiv">
@@ -1758,17 +1730,14 @@
         </div>
     </div>
 </div>
-
 <div class="db-place-holder" style="display:none">
     <div class="row">
         <input type="checkbox" class="chkPlaceholders" />
     </div>
 </div>
-
 <ejs-dialog id="customPropertyDialog"  width="500px" header="Additional Information" :target="dlgTarget"
     isModal="true" :animationSettings="dialogAnimationSettings" allowDragging="true" showCloseIcon="true" :visible="dialogVisibility">
 </ejs-dialog>
-
 <div class="db-layer-template" style="display: none">
     <div class="row">
         <div class="db-layer-content-name">
@@ -1783,8 +1752,6 @@
         </div>
     </div>
 </div>
-
-
 <ejs-dialog id="layerDialog" ref="layerDialog" isModal="true" width="300px" height="400px" header="Layers" :target="dlgTarget" 
     :animationSettings="dialogAnimationSettings" allowDragging="true" :visible="dialogVisibility" :footerTemplate="layerFooterTemplate">
 </ejs-dialog>
@@ -1855,21 +1822,17 @@
                 </div>
             </div>
         </div>
-   
 </ejs-dialog>
 </div>
 <ejs-dialog id="deleteConfirmationDialog"  width="400px" header="Delete Field" :target="dlgTarget"
     isModal="true" :animationSettings="dialogAnimationSettings" :visible="dialogVisibility" :buttons="deleteConfirmationButtons"
     showCloseIcon="true">
-    
-        <div id="deleteConfirmationContent">
+    <div id="deleteConfirmationContent">
             <span style="font-size: 13px; color: black">
                 Please confirm that you want to delete this field?. All data will be lost for this field once you deleted.
             </span>
-        </div>
-   
+      </div>
 </ejs-dialog>
-
 </div>
 </template>
 <script lang="ts">
@@ -2008,7 +1971,6 @@ import orderVue from './components/orderVue.vue';
 import drawshapeVue from './components/drawshapeVue.vue'
 import drawConnectorVue from './components/drawConnectorVue.vue';
 
-
 Vue.use(DiagramPlugin);
 Vue.use(DropDownButtonPlugin);
 Vue.use(ToolbarPlugin);
@@ -2037,8 +1999,10 @@ let gridlines = {
   lineColor: "#EEEEEE",
   lineIntervals: interval,
 };
-let itemVue = Vue.component("itemTemplate", {
-  template: `<span class="db-ddl-template-style">{{data.className}}</span>`,
+let itemVue : any = Vue.component("itemTemplate", {
+  template: `<div class="db-ddl-template-style">
+              <span :class=data.className></span>
+            </div>`,
   data() {
     return {
       data: {}
@@ -2046,8 +2010,11 @@ let itemVue = Vue.component("itemTemplate", {
   }
 });
 
-let valueVue = Vue.component("valueTemplate", {
-  template: `<span class ="db-ddl-template-style">{{data.className}}</span>`,
+let valueVue:any = Vue.component("valueTemplate", {
+  template:  `<div class="db-ddl-template-style">
+              <span :class=data.className></span>
+            </div>`,
+
   data() {
     return {
       data: {}
@@ -2091,8 +2058,7 @@ export default class User extends Vue {
   public openTemplateDialog: DialogComponent;
   public toolbarEditor: ToolbarComponent;
   public moreShapesList: ListViewComponent;
-  // public btnDrawShape: DropDownButtonComponent;
-  // public btnDrawConnector: DropDownButtonComponent;
+  public offsetXchange :SelectorViewModel;
   public dlgTarget: HTMLElement = document.body;
   public dialogAnimationSettings: AnimationSettingsModel = { effect: "None" };
   public dialogPosition: PositionDataModel = { X: 100, Y: 112 };
@@ -2107,8 +2073,8 @@ export default class User extends Vue {
   public moreShapesButtons: any = this.getDialogButtons("moreshapes");
   public saveButtons: any = this.getDialogButtons("save");
   public tooltipButtons: any = this.getDialogButtons("tooltip");
- public hyperlinkButtons: any = this.getDialogButtons("hyperlink");
- public deleteConfirmationButtons: any = this.getDialogButtons("deleteconfirmation");
+  public hyperlinkButtons: any = this.getDialogButtons("hyperlink");
+  public deleteConfirmationButtons: any = this.getDialogButtons("deleteconfirmation");
   public uploadButtons: any = this.getUploadButtons();
   public path: Object = {
         saveUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Save",
@@ -2145,7 +2111,6 @@ export default class User extends Vue {
     let tooltip : any = document.getElementById("tooltip");
     this.tooltip = tooltip.ej2_instances[0];
     let layerDialog: any = document.getElementById("layerDialog");
-    
     this.layerDialog = layerDialog.ej2_instances[0];
     let saveDialog: any = document.getElementById("saveDialog");
     this.saveDialog = saveDialog.ej2_instances[0];
@@ -2169,21 +2134,17 @@ export default class User extends Vue {
     this.defaultupload = defaultupload.ej2_instances[0];
     let customPropertyDialog :  any = document.getElementById("customPropertyDialog");
     this.customPropertyDialog = customPropertyDialog.ej2_instances[0];
-    // let btnDrawShape: any = document.getElementById(" btnDrawShape");
-    // this.btnDrawShape = btnDrawShape.ej2_instances[0];
-    // let btnDrawConnector :  any = document.getElementById("btnDrawConnector");
-    // this.btnDrawConnector = btnDrawConnector.ej2_instances[0];
-    // setTimeout(() => { this.generateDiagram(); }, 200);
+    let  toolbarEditor : any = document.getElementById("toolbarEditor");
+    this.toolbarEditor = toolbarEditor.ej2_instances[0];
     this.generateDiagram();
     this.page.addNewPage();
     CommonKeyboardCommands.selectedItem = this.selectedItem;
     CommonKeyboardCommands.page = this.page;
     document.onmouseover = this.menumouseover.bind(this);
-     (this.selectedItem.utilityMethods.tempDialog as unknown as DialogComponent) = this.openTemplateDialog;
-       (this.selectedItem.utilityMethods.toolbarEditor as unknown as ToolbarComponent)= this.toolbarEditor;
-
-        (OrgChartUtilityMethods.uploadDialog as unknown as DialogComponent) = this.fileUploadDialog;
-       (OrgChartUtilityMethods.customPropertyDialog as unknown as DialogComponent) = this.customPropertyDialog;
+    (this.selectedItem.utilityMethods.tempDialog as unknown as DialogComponent) = this.openTemplateDialog;
+    (this.selectedItem.utilityMethods.toolbarEditor as unknown as ToolbarComponent)= this.toolbarEditor;
+    (OrgChartUtilityMethods.uploadDialog as unknown as DialogComponent) = this.fileUploadDialog;
+    (OrgChartUtilityMethods.customPropertyDialog as unknown as DialogComponent) = this.customPropertyDialog;
     this.diagramEvents.ddlTextPosition = this.ddlTextPosition;
     this.customProperty.customPropertyDialog = this.customPropertyDialog;
     this.diagramLayer.layerDialog = this.layerDialog;
@@ -2214,11 +2175,11 @@ export default class User extends Vue {
   {
     debugger
   }
-  public itemVue()
+  public itemTemplate()
   {
     return {template: itemVue};
   }
-  public valueVue()
+  public valueTemplate()
   {
    return {template: valueVue}; 
   }
@@ -2266,13 +2227,6 @@ export default class User extends Vue {
                 node.style.fill = "white";
             }
         }
-          if(!((this.selectedItem as any).diagramType ==="MindMap" || (this.selectedItem as any).diagramType === 'OrgChart' || (this.selectedItem as any).diagramType === 'FlowChart')){
-
-        node.width=100;
-
-        node.height=40;
-
-    }
         if(!((this.selectedItem as any).diagramType==="MindMap")||((this.selectedItem as any).diagramType==="OrgChart")){
            node.ports = [
                 { offset: { x: 0, y: 0.5 }, style: { fill: 'white' }, visibility: PortVisibility.Connect | PortVisibility.Hover, constraints: PortConstraints.Draw | PortConstraints.Default},
@@ -2282,7 +2236,7 @@ export default class User extends Vue {
             ];
         }
         let node1: NodeModel = {
-            style: { strokeWidth: 2 }
+            style: { strokeWidth: 1 }
         };
         return node1;
     }
@@ -2516,47 +2470,10 @@ export default class User extends Vue {
     }
     diagram.dataBind();
   }
-    // public zoomChange(args: MenuEventArgs): void {
-    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-    //     if (args.item.text === "Custom") {
-    //         let ss: string = "";
-    //     } else if (args.item.text === "Fit To Screen") {
-    //         this.selectedItem.scrollSettings.currentZoom = "Fit ...";
-    //         diagram.fitToPage({ mode: "Page", region: "Content", margin: { left: 0, top: 0, right: 0, bottom: 0 } });
-    //     } else {
-    //         let currentZoom: any = diagram.scrollSettings.currentZoom;
-    //         let zoom: ZoomOptions = {};
-    //         switch (args.item.text) {
-    //             case "400%":
-    //                 zoom.zoomFactor = (4 / currentZoom) - 1;
-    //                 break;
-    //             case "300%":
-    //                 zoom.zoomFactor = (3 / currentZoom) - 1;
-    //                 break;
-    //             case "200%":
-    //                 zoom.zoomFactor = (2 / currentZoom) - 1;
-    //                 break;
-    //             case "150%":
-    //                 zoom.zoomFactor = (1.5 / currentZoom) - 1;
-    //                 break;
-    //             case "100%":
-    //                 zoom.zoomFactor = (1 / currentZoom) - 1;
-    //                 break;
-    //             case "75%":
-    //                 zoom.zoomFactor = (0.75 / currentZoom) - 1;
-    //                 break;
-    //             case "50%":
-    //                 zoom.zoomFactor = (0.5 / currentZoom) - 1;
-    //                 break;
-    //             case "25%":
-    //                 zoom.zoomFactor = (0.25 / currentZoom) - 1;
-    //                 break;
-    //         }
-    //         ((this.selectedItem as any).scrollSettings).currentZoom = args.item.text;
-    //         diagram.zoomTo(zoom);
-    //     }
-    // }
-
+public nodeaspectratiochange(args:any)
+{
+ this.selectedItem.nodePropertyChange({propertyName: 'aspectRatio', propertyValue: args.checked});
+}
   public beforeItemRender(args: MenuEventArgs): void {
         let shortCutText: string = this.getShortCutKey((args.item as any).text);
         if (shortCutText) {
@@ -2853,7 +2770,7 @@ export default class User extends Vue {
             let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
              let sourceNode: any;
             let source: any = args.source;
-           
+         
             if (source instanceof Diagram) {
                 if ((diagram.selectedItems as any).nodes.length === 1) {
                     sourceNode = (diagram.selectedItems as any).nodes[0] as Node;
@@ -2867,6 +2784,7 @@ export default class User extends Vue {
                 connector.sourceID = targetNode.id;
                 diagram.dataBind();
             }
+            
             diagram.doLayout();
         }
     };
@@ -3226,23 +3144,23 @@ export default class User extends Vue {
         (document.getElementById("btnDrawShape") as any).classList.add("tb-item-selected");
     }
 
-    public drawConnectorChange(args: MenuEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-        if (args.item.text === "Straight Line") {
-            diagram.drawingObject = { type: "Straight", style: { strokeWidth: 2 } };
-        } else if (args.item.text === "Orthogonal Line") {
-            diagram.drawingObject = { type: "Orthogonal", style: { strokeWidth: 2 } };
-        } else if (args.item.text === "Bezier") {
-            diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 2 } };
-        }
-        // else if (args.item.text === "Free Hand") {
-        //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 2 } };
-        // }
-        diagram.tool = DiagramTools.ContinuousDraw;
-        diagram.clearSelection();
-        this.removeSelectedToolbarItem();
-        (document.getElementById("btnDrawConnector") as any).classList.add("tb-item-selected");
-    }
+    // public drawConnectorChange(args: MenuEventArgs): void {
+    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
+    //     if (args.item.text === "Straight Line") {
+    //         diagram.drawingObject = { type: "Straight", style: { strokeWidth: 2 } };
+    //     } else if (args.item.text === "Orthogonal Line") {
+    //         diagram.drawingObject = { type: "Orthogonal", style: { strokeWidth: 2 } };
+    //     } else if (args.item.text === "Bezier") {
+    //         diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 2 } };
+    //     }
+    //     // else if (args.item.text === "Free Hand") {
+    //     //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 2 } };
+    //     // }
+    //     diagram.tool = DiagramTools.ContinuousDraw;
+    //     diagram.clearSelection();
+    //     this.removeSelectedToolbarItem();
+    //     (document.getElementById("btnDrawConnector") as any).classList.add("tb-item-selected");
+    // }
     // public orderCommandsChange(args: MenuEventArgs): void {
     //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
     //     if (args.item.text === "Send To Back") {

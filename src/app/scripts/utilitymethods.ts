@@ -522,7 +522,7 @@ export class UtilityMethods {
                     if ((selectedItems[0] as Node).children.length > 2) {
                         toolbarContainer.className = toolbarContainer.className + ' db-select db-double db-multiple db-node db-group';
                     } else {
-                        toolbarContainer.className = toolbarContainer.className + ' db-select db-double db-node db-group';
+                        toolbarContainer.className = toolbarContainer.className + ' db-select db-double db-node db-group' ;
                     }
                 } else {
                     toolbarContainer.className = toolbarContainer.className + ' db-select db-node';

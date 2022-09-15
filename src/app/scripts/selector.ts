@@ -639,7 +639,7 @@ export class MindMapSettings {
     return this.m_stroke;
   }
 
-  public set stroke(stroke: string) {
+  public set stroke(stroke: any) {
     if (this.m_stroke !== stroke) {
       this.m_stroke = stroke;
       this.triggerPropertyChange("stroke", stroke);
@@ -799,25 +799,25 @@ export class SelectorViewModel {
 
   public nodePropertyChange(args: { [key: string]: Object }): void {
     if (!this.preventPropertyChange) {
-      let diagram: Diagram = this.selectedDiagram as any;
+      let diagram: Diagram = this.selectedDiagram as Diagram;
       if (diagram) {
         if ((diagram as any).selectedItems.nodes.length > 0) {
-          let selectedNodes: NodeModel[] | undefined = (this.selectedDiagram as any).selectedItems.nodes;
+          let selectedNodes: NodeModel[] = (this.selectedDiagram as any).selectedItems.nodes;
           for (let i: number = 0; i < (selectedNodes as any).length; i++) {
-            let node: Node = (selectedNodes as any)[i] as Node;
+            let node: Node = selectedNodes[i] as Node;
             let propertyName1: string = args.propertyName.toString().toLowerCase();
             switch (propertyName1) {
               case "offsetx":
-                node.offsetX = this.nodeProperties.offsetX;
+                node.offsetX = (document.getElementById("nodeOffsetX") as any).ej2_instances[0].value;
                 break;
               case "offsety":
-                node.offsetY = this.nodeProperties.offsetY;
+                node.offsetY = (document.getElementById("nodeOffsetY") as any).ej2_instances[0].value;
                 break;
               case "width":
-                node.width = this.nodeProperties.width;
+                node.width = (document.getElementById("nodeWidth") as any).ej2_instances[0].value;
                 break;
               case "height":
-                node.height = this.nodeProperties.height;
+                node.height = (document.getElementById("nodeHeight") as any).ej2_instances[0].value;
                 break;
               case "rotateangle":
                 node.rotateAngle = this.nodeProperties.rotateAngle;
@@ -874,7 +874,7 @@ export class SelectorViewModel {
                 node.style.strokeColor = this.getColor(this.nodeProperties.strokeColor);
                 break;
             case "strokewidth":
-              (node as any).style.strokeWidth = this.nodeProperties.strokeWidth;
+              node.style.strokeWidth =this.nodeProperties.strokeWidth;
                 break;
             case "strokestyle":
                 node.style.strokeDashArray = this.nodeProperties.strokeStyle;
@@ -907,7 +907,7 @@ export class SelectorViewModel {
                             connector.targetDecorator.style = { fill: connector.style.strokeColor, strokeColor: connector.style.strokeColor };
                             break;
                         case "linewidth":
-                            connector.style.strokeWidth = this.connectorProperties.lineWidth;
+                            connector.style.strokeWidth = (document.getElementById("lineWidth") as any).ej2_instances[0].value;
                             if (connector.sourceDecorator.style) {
                                 connector.sourceDecorator.style.strokeWidth = connector.style.strokeWidth;
                             } else {
