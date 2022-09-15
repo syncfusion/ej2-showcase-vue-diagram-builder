@@ -504,8 +504,7 @@
                     <ejs-checkbox
                       id="aspectRatio"
                       label="Aspect Ratio"
-                     :checked="false"
-                     v-on:change="nodeaspectratiochange"
+                     v-model="selectedItem.nodeProperties.aspectRatio"
                     ></ejs-checkbox>
                   </div>
                 </div>
