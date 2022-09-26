@@ -262,12 +262,7 @@ export class DiagramClientSideEvents {
         // obj.height= 80;
         let ratio: number = 100 / (obj as any).width;
         (obj as any).height *= ratio;
-        // if(args.element)
-        // {
-        //     let diagram :Diagram = this.selectedItem.selectedDiagram ;
-        //     this.selectedItem.nodeProperties.aspectRatio= false;
-        //     diagram.dataBind();
-        // }
+        
     }
 
     public historyChange(args: IHistoryChangeArgs): void {

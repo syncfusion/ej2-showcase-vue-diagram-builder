@@ -2170,10 +2170,7 @@ export default class User extends Vue {
     verticalGridlines: gridlines,
     constraints: SnapConstraints.All & ~SnapConstraints.SnapToLines,
   };
-  public close()
-  {
-    debugger
-  }
+
   public itemTemplate()
   {
     return {template: itemVue};
@@ -3113,7 +3110,6 @@ public nodeaspectratiochange(args:any)
   }
     private registerBrowseEvent = false;
     public btnImportClick(args: MouseEvent): void {
-      //  (document.getElementById("btnImportData") as any).onclick = () => {
         if (!this.registerBrowseEvent) {
             (this.defaultupload as any).dropArea = document.getElementById("dropRegion");
             (document.getElementById("browseFile") as any).onclick = () => {
@@ -3129,51 +3125,7 @@ public nodeaspectratiochange(args:any)
         uploadDialogContent.className = "db-upload-content firstPage";
         OrgChartUtilityMethods.showUploadDialog();
     }
-    public drawShapeChange(args: MenuEventArgs): void {
-        let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-        if (args.item.text === "Rectangle") {
-            diagram.drawingObject = { shape: { type: "Basic", shape: "Rectangle" }, style: { strokeWidth: 2 } };
-        } else if (args.item.text === "Ellipse") {
-            diagram.drawingObject = { shape: { type: "Basic", shape: "Ellipse" }, style: { strokeWidth: 2 } };
-        } else if (args.item.text === "Polygon") {
-            diagram.drawingObject = { shape: { type: "Basic", shape: "Polygon" }, style: { strokeWidth: 2 } };
-        }
-        diagram.tool = DiagramTools.ContinuousDraw;
-        this.removeSelectedToolbarItem();
-        (document.getElementById("btnDrawShape") as any).classList.add("tb-item-selected");
-    }
-
-    // public drawConnectorChange(args: MenuEventArgs): void {
-    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-    //     if (args.item.text === "Straight Line") {
-    //         diagram.drawingObject = { type: "Straight", style: { strokeWidth: 2 } };
-    //     } else if (args.item.text === "Orthogonal Line") {
-    //         diagram.drawingObject = { type: "Orthogonal", style: { strokeWidth: 2 } };
-    //     } else if (args.item.text === "Bezier") {
-    //         diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 2 } };
-    //     }
-    //     // else if (args.item.text === "Free Hand") {
-    //     //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 2 } };
-    //     // }
-    //     diagram.tool = DiagramTools.ContinuousDraw;
-    //     diagram.clearSelection();
-    //     this.removeSelectedToolbarItem();
-    //     (document.getElementById("btnDrawConnector") as any).classList.add("tb-item-selected");
-    // }
-    // public orderCommandsChange(args: MenuEventArgs): void {
-    //     let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
-    //     if (args.item.text === "Send To Back") {
-    //         this.sendToBack();
-    //     } else if (args.item.text === "Bring To Front") {
-    //         this.bringToFront();
-    //     } else if (args.item.text === "Bring Forward") {
-    //         this.selectedItem.isModified = true;
-    //         diagram.moveForward();
-    //     } else if (args.item.text === "Send Backward") {
-    //         this.selectedItem.isModified = true;
-    //         diagram.sendBackward();
-    //     }
-    // }
+    
      public contextMenuClick(args: ContextMenuEventArgs): void {
         let buttonElement: any = document.getElementsByClassName("e-btn-hover")[0];
         if (buttonElement) {
