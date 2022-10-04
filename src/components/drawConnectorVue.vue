@@ -67,7 +67,7 @@ public menuItems: ItemModel[] = [
     { iconCss: "sf-icon-StraightLine", text: "Straight Line" },
     { iconCss: "sf-icon-ConnectorMode", text: "Orthogonal Line" },
     { iconCss: "sf-icon-BeizerLine", text: "Bezier" },
-    { iconCss: "sf-icon-BeizerLine", text: "Free Hand" }
+    { iconCss: "sf-icon-free_hand", text: "Free Hand" }
   ];
    public drawConnectorChange(args: MenuEventArgs): void {
         let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
@@ -78,7 +78,7 @@ public menuItems: ItemModel[] = [
         } else if (args.item.text === "Bezier") {
             diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 1 } };
         }
-        // else if (args.item.text === "Free Hand") {
+        // else if (args.item.text === "FreeHand") {
         //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 1 } };
         // }
         diagram.tool = DiagramTools.ContinuousDraw;

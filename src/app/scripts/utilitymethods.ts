@@ -593,6 +593,11 @@ export class UtilityMethods {
                     return true;
                 }
             }
+            if(selectedItem.diagramType !== 'MindMap') {
+                if (itemText === 'Show Shortcuts') {
+                    return true;
+                }
+            }
         }
         return false;
     }

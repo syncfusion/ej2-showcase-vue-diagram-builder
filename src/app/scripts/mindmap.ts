@@ -90,6 +90,30 @@ export class MindMap {
                 gesture: { key: Keys.V, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
                 execute: this.pasteMindMap.bind(this), name: 'pasteObject'
             }
+            {
+                gesture: { key: Keys.B, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
+                execute: this.boldLabel.bind(this), name: 'boldLabel'
+            },
+            {
+                gesture: { key: Keys.U, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
+                execute: this.underlineLabel.bind(this), name: 'underLineLabel'
+            },
+            {
+                gesture: { key: Keys.I, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
+                execute: this.italicLabel.bind(this), name: 'italicLabel'
+            },
+            {
+                gesture: { key: Keys.BackSpace }, canExecute: this.canExecute,
+                execute: this.removeNode.bind(this), name: 'deleteNode'
+            },
+            {
+                gesture: { key: Keys.F8 }, canExecute: this.canExecute,
+                execute: this.onFit.bind(this), name: 'FitToPage'
+            },
+            {
+                gesture: { key: Keys.E, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
+                execute: this.expandCollapseParent.bind(this), name: 'expandCollapseParent'
+            }
             ]
         };
         commandManager.commands = CommonKeyboardCommands.addCommonCommands((commandManager as any).commands);
@@ -140,6 +164,10 @@ export class MindMap {
 
     private removeChild(args: { [key: string]: Object }): void {
         this.selectedItem.utilityMethods.removeChild(this.selectedItem);
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        if ((diagram.selectedItems as any).nodes.length > 0 && (diagram.selectedItems as any).nodes[0].id !== "rootNode") {
+            this.selectedItem.utilityMethods.removeChild(this.selectedItem);
+        }
     }
 
     private navigateLeftChild(args: Object): void {
@@ -166,6 +194,55 @@ export class MindMap {
             diagram.dataBind();
         }
     }
+    public expandCollapseParent() {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        let node: NodeModel = diagram.nodes[0];
+        node.isExpanded = !node.isExpanded;
+        diagram.dataBind();
+    };
+    public boldLabel() {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        if (diagram.selectedItems.nodes && diagram.selectedItems.nodes.length > 0) {
+            let node: NodeModel = diagram.selectedItems.nodes[0];
+            if (node.annotations && node.annotations.length > 0 && node.annotations[0].style) {
+                node.annotations[0].style.bold = !node.annotations[0].style.bold;
+                diagram.dataBind();
+            }
+        }
+    };
+    public underlineLabel() {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        if (diagram.selectedItems.nodes && diagram.selectedItems.nodes.length > 0) {
+            let node: NodeModel = diagram.selectedItems.nodes[0];
+            if (node.annotations && node.annotations.length > 0 && node.annotations[0].style) {
+                node.annotations[0].style.textDecoration = node.annotations[0].style.textDecoration === 'Underline' ? 'None' : 'Underline';
+                diagram.dataBind();
+            }
+        }
+    };
+    public italicLabel() {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        if (diagram.selectedItems.nodes && diagram.selectedItems.nodes.length > 0) {
+            let node: NodeModel = diagram.selectedItems.nodes[0];
+            if (node.annotations && node.annotations.length > 0 && node.annotations[0].style) {
+                node.annotations[0].style.italic = !node.annotations[0].style.italic;
+                diagram.dataBind();
+            }
+        }
+    };
+
+    public onFit() {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        diagram.fitToPage();
+    };
+
+    private removeNode(args: { [key: string]: any }): void {
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        if ((diagram.selectedItems as any).nodes.length > 0 && (diagram.selectedItems as any).nodes[0].id !== "rootNode") {
+            this.selectedItem.utilityMethods.removeChild(this.selectedItem);
+        }
+    }
+
 
     private editNode(): void {
         let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
@@ -449,7 +526,7 @@ export abstract class MindMapUtilityMethods {
         };
         (this.selectedItem as any).selectedDiagram.add(node);
         let node1: NodeModel = {
-            id: 'textNode', width: 400, height: 280, offsetX: (this.selectedItem as any).selectedDiagram.scrollSettings.viewPortWidth - 200, offsetY: 140,
+            id: 'textNode', width: 400, height: 450, offsetX: (this.selectedItem as any).selectedDiagram.scrollSettings.viewPortWidth - 200, offsetY: 230,
             shape: { type: 'HTML', content: this.getShortCutString() }, style: { strokeWidth: 0 },
             excludeFromLayout: true,
             constraints: NodeConstraints.Default & ~NodeConstraints.Delete
@@ -466,7 +543,7 @@ export abstract class MindMapUtilityMethods {
     }
 
     public static getShortCutString(): string {
-        return '<div style="width: 400px; height: 280px; padding: 10px; background-color: #FFF7B5; border: 1px solid #FFF7B5">' +
+        return '<div style="width: 400px; height: 450px; padding: 10px; background-color: #FFF7B5; border: 1px solid #FFF7B5">' +
             '<div id="closeIconDiv" style="float: right; width: 22px; height: 22px; border: 1px solid #FFF7B5">' +
             '<span class="sf-icon-Close" style="font-size:14px;cursor:pointer;"></span>' +
             '</div>' +
@@ -509,6 +586,7 @@ export abstract class MindMapUtilityMethods {
             '<ul>' +
             '<li>' +
             '<span class="db-html-font-medium">Delete : </span>' +
+            '<span class="db-html-font-medium">Delete / Backspace : </span>' +
             '<span class="db-html-font-normal">Delete a topic</span>' +
             '</li>' +
             '</ul>' +
@@ -532,8 +610,56 @@ export abstract class MindMapUtilityMethods {
             '<div>' +
             '<ul>' +
             '<li>' +
+            '<span class="db-html-font-medium">Ctrl + B : </span>' +
+            '<span class="db-html-font-normal">To make text bold</span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
+            '<span class="db-html-font-medium">Ctrl + I : </span>' +
+            '<span class="db-html-font-normal">To make text Italic </span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
+            '<span class="db-html-font-medium">Ctrl + U : </span>' +
+            '<span class="db-html-font-normal">Underline the text</span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
             '<span class="db-html-font-medium">Arrow(Up, Down, Left, Right) : </span>' +
             '<span class="db-html-font-normal">Navigate between topics</span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
+            '<span class="db-html-font-medium">Space : </span>' +
+            '<span class="db-html-font-normal">Expand / Collapse the selected node</span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
+            '<span class="db-html-font-medium">Ctrl + E :  </span>' +
+            '<span class="db-html-font-normal">Expand / Collapse the whole diagram</span>' +
+            '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div>' +
+            '<ul>' +
+            '<li>' +
+            '<span class="db-html-font-medium">F8 : </span>' +
+            '<span class="db-html-font-normal">To Fit the diagram into the viewport</span>' +
             '</li>' +
             '</ul>' +
             '</div>' +

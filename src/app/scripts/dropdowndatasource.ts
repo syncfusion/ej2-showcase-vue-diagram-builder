@@ -102,6 +102,7 @@ export class DropDownDataSources {
       { text: "Show Properties", iconCss: "sf-icon-Selection" },
       { text: "Show Layers" },
       { text: "Show Pager", iconCss: "sf-icon-Selection" },
+      { text: 'Show Shortcuts' },
       { text: "Themes" },
     ];
     return menuItems;
@@ -197,7 +198,7 @@ export class DropDownDataSources {
     { iconCss: "sf-icon-StraightLine", text: "Straight Line" },
     { iconCss: "sf-icon-ConnectorMode", text: "Orthogonal Line" },
     { iconCss: "sf-icon-BeizerLine", text: "Bezier" },
-    { iconCss: "sf-icon-BeizerLine", text: "Free Hand" }
+    { iconCss: "sf-icon-free_hand", text: "FreeHand" }
   ];
   public orderCommandsList: ItemModel[] = [
     { iconCss: "sf-icon-Sendback", text: "Send To Back" },
