@@ -102,6 +102,7 @@ export class DropDownDataSources {
       { text: "Show Properties", iconCss: "sf-icon-Selection" },
       { text: "Show Layers" },
       { text: "Show Pager", iconCss: "sf-icon-Selection" },
+      { text: 'Show Shortcuts' },
       { text: "Themes" },
     ];
     return menuItems;

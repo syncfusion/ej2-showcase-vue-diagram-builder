@@ -4,7 +4,8 @@ import {
     ISelectionChangeEventArgs, IDragEnterEventArgs, Diagram, Node, Connector, NodeModel,
     ShapeAnnotationModel, TextAlign, HorizontalAlignment, VerticalAlignment, IHistoryChangeArgs, TextStyleModel,
     PathAnnotationModel, ShapeAnnotation, PathAnnotation, AnnotationAlignment, SelectorModel,
-    DiagramBeforeMenuOpenEventArgs, IScrollChangeEventArgs, DiagramMenuEventArgs, ITextEditEventArgs
+    DiagramBeforeMenuOpenEventArgs, IScrollChangeEventArgs, DiagramMenuEventArgs, ITextEditEventArgs,IKeyEventArgs,
+    DiagramAction
 } from "@syncfusion/ej2-diagrams";
 import { ChangeEventArgs as DropDownChangeEventArgs, MultiSelectChangeEventArgs } from "@syncfusion/ej2-dropdowns";
 import { ChangeEventArgs as NumericChangeEventArgs, ColorPickerEventArgs } from "@syncfusion/ej2-inputs";
@@ -275,6 +276,14 @@ export class DiagramClientSideEvents {
         }
         if ((diagram as any).historyManager.redoStack.length > 0) {
             toolbarContainer.classList.add("db-redo");
+        }
+    }
+    public keyDown(args: IKeyEventArgs) {
+        if(this.selectedItem.diagramType === 'MindMap') {
+            let diagram: Diagram = this.selectedItem.selectedDiagram;
+            if (args.key === "Enter" && args.keyModifiers === 0 && (diagram.diagramActions & DiagramAction.TextEdit)) {
+                diagram.endEdit();
+            }
         }
     }
 }

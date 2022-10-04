@@ -319,7 +319,8 @@
               :collectionChange="this.collectionChange"
               :drop="this.drop"
               :getCustomTool="getCustomTool"
-              :textEdit="diagramEvents.textEdit.bind(this.diagramEvents)"
+              :textEdit="this.diagramEvents.textEdit.bind(this.diagramEvents)"
+              :keyDown="this.diagramEvents.keyDown.bind(this.diagramEvents)"
               backgroundColor="transparent"
               :contextMenuSettings="contextMenuSettings"
               :commandManager="commandManager" 
@@ -2459,6 +2460,11 @@ export default class User extends Vue {
           this.selectedItem.selectedDiagram
         );
         args.item.iconCss = args.item.iconCss ? "" : "sf-icon-Selection";
+        break;
+      case 'showshortcuts':
+        let node1: NodeModel = diagram.getObject('textNode');
+        node1.visible = !node1.visible;
+        this.selectedItem.selectedDiagram.dataBind();
         break;
       default:
         this.executeEditMenu(diagram, commandType);
