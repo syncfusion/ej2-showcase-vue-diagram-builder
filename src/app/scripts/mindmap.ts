@@ -89,7 +89,7 @@ export class MindMap {
             {
                 gesture: { key: Keys.V, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
                 execute: this.pasteMindMap.bind(this), name: 'pasteObject'
-            }
+            },
             {
                 gesture: { key: Keys.B, keyModifiers: KeyModifiers.Control }, canExecute: this.canExecute,
                 execute: this.boldLabel.bind(this), name: 'boldLabel'
@@ -162,8 +162,7 @@ export class MindMap {
         MindMapUtilityMethods.addSibilingChild('Bottom');
     }
 
-    private removeChild(args: { [key: string]: Object }): void {
-        this.selectedItem.utilityMethods.removeChild(this.selectedItem);
+    private removeChild(args: { [key: string]: Object }): void { 
         let diagram: Diagram = this.selectedItem.selectedDiagram;
         if ((diagram.selectedItems as any).nodes.length > 0 && (diagram.selectedItems as any).nodes[0].id !== "rootNode") {
             this.selectedItem.utilityMethods.removeChild(this.selectedItem);
@@ -518,7 +517,7 @@ export abstract class MindMapUtilityMethods {
     public static createEmptyMindMap(): NodeModel {
         let node: NodeModel = {
             id: 'rootNode', width: 150, minHeight: 50,
-            annotations: [{ content: 'MindMap', style: { color: '#000000' } }],
+            annotations: [{ content: 'MindMap', style: { color: '#000000', fontSize: 12 } }],
             shape: { type: 'Basic', shape: 'Rectangle', cornerRadius: 5 },
             ports: [{ id: 'leftPort', offset: { x: 0, y: 0.5 } }, { id: 'rightPort', offset: { x: 1, y: 0.5 } }],
             addInfo: { level: 0 }, style: { fill: '#D0ECFF', strokeColor: '#80BFEA', strokeWidth: 1 },
