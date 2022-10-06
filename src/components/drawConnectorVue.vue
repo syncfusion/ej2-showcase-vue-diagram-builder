@@ -69,7 +69,7 @@ public menuItems: ItemModel[] = [
     { iconCss: "sf-icon-BeizerLine", text: "Bezier" },
     { iconCss: "sf-icon-free_hand", text: "Free Hand" }
   ];
-   public drawConnectorChange(args: MenuEventArgs): void {
+   public drawConnectorChange(args: MenuEventArgs): void { 
         let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
         if (args.item.text === "Straight Line") {
             diagram.drawingObject = { type: "Straight", style: { strokeWidth: 1 } };
@@ -78,9 +78,9 @@ public menuItems: ItemModel[] = [
         } else if (args.item.text === "Bezier") {
             diagram.drawingObject = { type: "Bezier", style: { strokeWidth: 1 } };
         }
-        // else if (args.item.text === "FreeHand") {
-        //     diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 1 } };
-        // }
+        else if (args.item.text === "Free Hand") {
+            diagram.drawingObject = { type: "Freehand", style: { strokeWidth: 1 } };
+        }
         diagram.tool = DiagramTools.ContinuousDraw;
         diagram.clearSelection();
         this.removeSelectedToolbarItem();
