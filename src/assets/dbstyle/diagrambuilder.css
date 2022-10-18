@@ -8,6 +8,9 @@ body {
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
+#js-licensing {
+  display: none;
+}
 
 html, body {
     height: 100%;
