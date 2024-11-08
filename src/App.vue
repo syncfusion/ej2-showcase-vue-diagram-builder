@@ -2077,8 +2077,10 @@ export default class User extends Vue {
   public deleteConfirmationButtons: any = this.getDialogButtons("deleteconfirmation");
   public uploadButtons: any = this.getUploadButtons();
   public path: Object = {
-        saveUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Save",
-        removeUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Remove"
+        saveUrl:
+          "https://services.syncfusion.com/vue/production/api/FileUploader/Save",
+        removeUrl:
+          "https://services.syncfusion.com/vue/production/api/FileUploader/Remove",
     };
   public dropDownDataSources: DropDownDataSources = new DropDownDataSources();
   public selectedItem: SelectorViewModel = new SelectorViewModel();
