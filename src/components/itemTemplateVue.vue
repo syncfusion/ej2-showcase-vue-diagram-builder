@@ -1,33 +1,32 @@
 <template>
   <div>
-     <ejs-dropdownList
-        dataSource="dropDownDataSources.borderStyles" :itemTemplate="itemTemplate"
-      ></ejs-dropdownList>
+    <ejs-dropdownList
+      :dataSource="dropDownDataSources.borderStyles"
+      :itemTemplate="itemTemplate"
+    ></ejs-dropdownList>
   </div>
 </template>
+
 <script lang="ts">
-import Vue from "vue";
-import { DropDownListPlugin } from "@syncfusion/ej2-vue-dropdowns";
-import { DropDownDataSources } from "../app/scripts/dropdowndatasource";
-Vue.use(DropDownListPlugin);
+import { defineComponent, h, reactive } from 'vue';
+import { DropDownDataSources } from '../app/scripts/dropdowndatasource';
+import { DropDownListComponent } from '@syncfusion/ej2-vue-dropdowns';
 
-let itemVue = Vue.component("itemTemplate", {
-  template: `<span><span class='db-ddl-template-style'>{{data.className}}</span></span>`,
-  data() {
-    return {
-      data: {},
-    };
+export default defineComponent({
+  components: {
+    'ejs-dropdownList': DropDownListComponent
   },
-});
+  setup() {
+    const dropDownDataSources = reactive(new DropDownDataSources());
 
-export default class User extends Vue {
-      public dropDownDataSources: DropDownDataSources = new DropDownDataSources();
-  
-      
-      public itemTemplate (){
-        return {
-          template: itemVue,
-        };
-      }
-};
+    const itemTemplate = (props: any) => h('span', [
+      h('span', { class: 'db-ddl-template-style' }, props.data.className)
+    ]);
+
+    return {
+      dropDownDataSources,
+      itemTemplate,
+    };
+  }
+});
 </script>

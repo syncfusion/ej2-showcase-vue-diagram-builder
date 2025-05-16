@@ -310,7 +310,7 @@ export class DiagramPropertyBinding {
             let diagram: Diagram = this.selectedItem.selectedDiagram as Diagram;
             (document.getElementById("pageDimension") as any).style.display = "none";
             (document.getElementById("pageOrientation") as any).style.display = "";
-            this.selectedItem.pageSettings.paperSize = args.value as string;
+            this.selectedItem.pageSettings.paperSize = args.itemData.value as string;
             let paperSize: PaperSize = this.selectedItem.utilityMethods.getPaperSize(this.selectedItem.pageSettings.paperSize);
             let pageWidth: number = paperSize.pageWidth;
             let pageHeight: number = paperSize.pageHeight;
