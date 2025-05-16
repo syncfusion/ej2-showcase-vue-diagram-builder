@@ -584,13 +584,6 @@ export class PrintSettings {
 
   public set paperSize(paperSize: string) {
     this.m_paperSize = paperSize;
-    (document.getElementById("printCustomSize") as any).style.display = "none";
-    (document.getElementById("printOrientation") as any).style.display = "none";
-    if (paperSize === "Custom") {
-      (document.getElementById("printCustomSize") as any).style.display = "";
-    } else {
-      (document.getElementById("printOrientation") as any).style.display = "";
-    }
   }
 }
 
@@ -808,16 +801,16 @@ export class SelectorViewModel {
             let propertyName1: string = args.propertyName.toString().toLowerCase();
             switch (propertyName1) {
               case "offsetx":
-                node.offsetX = (document.getElementById("nodeOffsetX") as any).ej2_instances[0].value;
+                node.offsetX = this.nodeProperties.offsetX;
                 break;
               case "offsety":
-                node.offsetY = (document.getElementById("nodeOffsetY") as any).ej2_instances[0].value;
+                node.offsetY = this.nodeProperties.offsetY;
                 break;
               case "width":
-                node.width = (document.getElementById("nodeWidth") as any).ej2_instances[0].value;
+                node.width = this.nodeProperties.width;
                 break;
               case "height":
-                node.height = (document.getElementById("nodeHeight") as any).ej2_instances[0].value;
+                node.height = this.nodeProperties.height;
                 break;
               case "rotateangle":
                 node.rotateAngle = this.nodeProperties.rotateAngle;

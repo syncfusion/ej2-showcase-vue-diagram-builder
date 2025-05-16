@@ -1,12 +1,11 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
+import { createApp, defineComponent } from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
 
-Vue.config.productionTip = false;
+// ... existing code ...
 
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+createApp(App as ReturnType<typeof defineComponent>)
+  .use(router)
+  .use(store)
+  .mount('#app');
