@@ -83,12 +83,6 @@ export abstract class CommonKeyboardCommands {
       name: "New",
     });
     commands.push({
-      gesture: { key: Keys.N, keyModifiers: KeyModifiers.Shift },
-      canExecute: this.canExecute,
-      execute: this.newDiagram.bind(this),
-      name: "New",
-    });
-    commands.push({
       gesture: { key: Keys.O, keyModifiers: KeyModifiers.Control },
       canExecute: this.canExecute,
       execute: this.openDiagram.bind(this),

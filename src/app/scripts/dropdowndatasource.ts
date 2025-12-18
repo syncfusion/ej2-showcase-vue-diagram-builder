@@ -1,111 +1,111 @@
 import { ItemModel } from "@syncfusion/ej2-splitbuttons";
 import { MenuItemModel } from "@syncfusion/ej2-navigations";
 export class DropDownDataSources {
-  public fileMenuItems: ItemModel[] = this.getFileMenuItems();
-  public editMenuItems: ItemModel[] = this.getEditMenuItems();
-  public viewMenuItems: ItemModel[] = this.getViewMenuItems();
-  public arrangeMenuItems: MenuItemModel[] = this.getArrangeMenuItems();
-  public windowMenuItems: ItemModel[] = this.getWindowMenuItems();
+  public menuItems: MenuItemModel[] = this.getMenuItems();
   public helpMenuItems: ItemModel[] = this.getHelpMenuItems();
-  public getFileMenuItems(): ItemModel[] {
-    const menuItems: ItemModel[] = [
-      { text: "New" },
-      { text: "Open" },
-      { separator: true },
-      { text: "Save", iconCss: "sf-icon-Save" },
-      { text: "Save As" },
-      { text: "Export", iconCss: "sf-icon-Export" },
-      { separator: true },
-      { text: "Print", iconCss: "sf-icon-Print" },
-    ];
-    return menuItems;
-  }
-  public getEditMenuItems(): ItemModel[] {
-    const menuItems: ItemModel[] = [
-      { text: "Undo", iconCss: "sf-icon-Undo" },
-      { text: "Redo", iconCss: "sf-icon-Redo" },
-      { separator: true },
-      { text: "Cut", iconCss: "sf-icon-Cut" },
-      { text: "Copy", iconCss: "sf-icon-Copy" },
-      { text: "Paste", iconCss: "sf-icon-Paste" },
-      { text: "Delete", iconCss: "sf-icon-Delete" },
-      { separator: true },
-      { text: "Duplicate" },
-      { separator: true },
-      { text: "Edit Tooltip" },
-      { separator: true },
-      { text: "Select All" },
-    ];
-    return menuItems;
-  }
-  public getViewMenuItems(): ItemModel[] {
-    const menuItems: ItemModel[] = [
-      { text: "Zoom In", iconCss: "sf-icon-ZoomIn" },
-      { text: "Zoom Out", iconCss: "sf-icon-ZoomOut" },
-      { separator: true },
-      { text: "Fit To Screen" },
-      { separator: true },
-      { text: "Show Rulers" },
-      { text: "Show Guides", iconCss: "sf-icon-Selection" },
-      { text: "Show Grid", iconCss: "sf-icon-Selection" },
-      { separator: true },
-      { text: "Snap To Grid" },
-    ];
-    return menuItems;
-  }
-  public getArrangeMenuItems(): MenuItemModel[] {
-    const menuItems1: MenuItemModel[] = [
-      { text: "Send To Back", iconCss: "sf-icon-Sendback" },
-      { text: "Bring To Front", iconCss: "sf-icon-BringFront" },
-      { text: "Send Backward", iconCss: "sf-icon-SendBackward" },
-      { text: "Bring Forward", iconCss: "sf-icon-BringForward" },
-      { separator: true },
-      {
-        text: "Align Objects",
-        items: [
-          { text: "Left", iconCss: "sf-icon-AlignLeft" },
-          { text: "Right", iconCss: "sf-icon-AlignRight" },
-          { text: "Center", iconCss: "sf-icon-AlignHorizontally" },
-          { text: "Top", iconCss: "sf-icon-AilgnTop" },
-          { text: "Bottom", iconCss: "sf-icon-AlignBottom" },
-          { text: "Middle", iconCss: "sf-icon-AlignVertically" },
-        ],
-      },
-      {
-        text: "Distribute Objects",
-        items: [
-          { text: "Horizontally", iconCss: "sf-icon-DistributeHorizontal" },
-          { text: "Vertically", iconCss: "sf-icon-DistributeVertical" },
-        ],
-      },
-      {
-        text: "Match Size",
-        items: [
-          { text: "Both Width and Height" },
-          { text: "Width" },
-          { text: "Height" },
-        ],
-      },
-      { separator: true },
-      { text: "Lock" },
-      { text: "Unlock" },
-      { separator: true },
-      { text: "Group" },
-      { text: "Ungroup" },
-    ];
-    return menuItems1;
-  }
-  public getWindowMenuItems(): ItemModel[] {
-    const menuItems: ItemModel[] = [
-      { text: "Show Toolbar", iconCss: "sf-icon-Selection" },
-      { text: "Show Stencil", iconCss: "sf-icon-Selection" },
-      { text: "Show Properties", iconCss: "sf-icon-Selection" },
-      { text: "Show Layers" },
-      { text: "Show Pager", iconCss: "sf-icon-Selection" },
-      { text: 'Show Shortcuts' },
-      { text: "Themes" },
-    ];
-    return menuItems;
+  public getMenuItems(): MenuItemModel[] {
+    const menuItems: any[] = [
+        {
+          text: 'File',
+          items: [
+            { text: "New", iconCss: 'e-icons e-circle-add' },
+            { text: "Open", iconCss: 'e-icons e-folder-open' },
+            { separator: true },
+            { text: "Save", iconCss: "sf-icon-Save" },
+            { text: "Save As" },
+            { text: "Export", iconCss: "sf-icon-Export" },
+            { separator: true },
+            { text: "Print", iconCss: "sf-icon-Print" },
+          ]
+        },
+        {
+          text: 'Edit',
+          items: [
+            { text: "Undo", iconCss: "sf-icon-Undo" },
+            { text: "Redo", iconCss: "sf-icon-Redo" },
+            { separator: true },
+            { text: "Cut", iconCss: "sf-icon-Cut" },
+            { text: "Copy", iconCss: "sf-icon-Copy" },
+            { text: "Paste", iconCss: "sf-icon-Paste" },
+            { text: "Delete", iconCss: "sf-icon-Delete" },
+            { separator: true },
+            { text: "Duplicate" },
+            { separator: true },
+            { text: "Edit Tooltip" },
+            { separator: true },
+            { text: "Select All" },
+          ]
+        },
+        {
+          text: 'View',
+          items: [
+            { text: "Zoom In", iconCss: "sf-icon-ZoomIn" },
+            { text: "Zoom Out", iconCss: "sf-icon-ZoomOut" },
+            { separator: true },
+            { text: "Fit To Screen" },
+            { separator: true },
+            { text: "Show Rulers" },
+            { text: "Show Guides", iconCss: "sf-icon-Selection" },
+            { text: "Show Grid", iconCss: "sf-icon-Selection" },
+            { separator: true },
+            { text: "Snap To Grid" },
+          ]
+        },
+        {
+          text: 'Arrange',
+          items: [
+            { text: "Send To Back", iconCss: "sf-icon-Sendback" },
+            { text: "Bring To Front", iconCss: "sf-icon-BringFront" },
+            { text: "Send Backward", iconCss: "sf-icon-SendBackward" },
+            { text: "Bring Forward", iconCss: "sf-icon-BringForward" },
+            { separator: true },
+            {
+              text: "Align Objects",
+              items: [
+                { text: "Left", iconCss: "sf-icon-AlignLeft" },
+                { text: "Right", iconCss: "sf-icon-AlignRight" },
+                { text: "Center", iconCss: "sf-icon-AlignHorizontally" },
+                { text: "Top", iconCss: "sf-icon-AilgnTop" },
+                { text: "Bottom", iconCss: "sf-icon-AlignBottom" },
+                { text: "Middle", iconCss: "sf-icon-AlignVertically" },
+              ],
+            },
+            {
+              text: "Distribute Objects",
+              items: [
+                { text: "Horizontally", iconCss: "sf-icon-DistributeHorizontal" },
+                { text: "Vertically", iconCss: "sf-icon-DistributeVertical" },
+              ],
+            },
+            {
+              text: "Match Size",
+              items: [
+                { text: "Both Width and Height" },
+                { text: "Width" },
+                { text: "Height" },
+              ],
+            },
+            { separator: true },
+            { text: "Lock" },
+            { text: "Unlock" },
+            { separator: true },
+            { text: "Group" },
+            { text: "Ungroup" },
+          ]
+        }, {
+          text: 'Window',
+          items: [
+            { text: "Show Toolbar", iconCss: "sf-icon-Selection" },
+            { text: "Show Stencil", iconCss: "sf-icon-Selection" },
+            { text: "Show Properties", iconCss: "sf-icon-Selection" },
+            { text: "Show Layers" },
+            { text: "Show Pager", iconCss: "sf-icon-Selection" },
+            { text: 'Show Shortcuts' },
+            { text: "Themes" },
+          ]
+        },
+      ];
+      return menuItems;
   }
   public getHelpMenuItems(): ItemModel[] {
     const menuItems: ItemModel[] = [

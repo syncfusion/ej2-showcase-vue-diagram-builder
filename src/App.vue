@@ -1,7 +1,7 @@
 <template>
   <div>
     <ejs-contextmenu id="arrangeContextMenu" :animationSettings="dialogAnimationSettings"
-      :items="dropDownDataSources.arrangeMenuItems" @onOpen="arrangeContextMenuOpen" cssClass="arrangeMenu"
+      :items="dropDownDataSources.menuItems[3].items" @onOpen="arrangeContextMenuOpen" cssClass="arrangeMenu"
       @select="contextMenuClick" :beforeClose="arrangeMenuBeforeClose">
     </ejs-contextmenu>
     <div class="diagrambuilder-container">
@@ -19,50 +19,18 @@
             @focusout="diagramNameChange" />
           <span id="diagramreport" class="db-diagram-name db-save-text"></span>
         </div>
-        <div class="db-menu-container">
-          <div class="db-menu-style">
-            <ejs-dropdownbutton id="btnFileMenu" cssClass="db-dropdown-menu" :items="dropDownDataSources.fileMenuItems"
-              @select="menuClick" :beforeOpen="arrangeMenuBeforeOpen" :beforeClose="arrangeMenuBeforeClose"
-              :beforeItemRender="beforeItemRender">
-              File
-            </ejs-dropdownbutton>
-          </div>
-          <div class="db-menu-style">
-            <ejs-dropdownbutton id="btnEditMenu" cssClass="db-dropdown-menu" :items="dropDownDataSources.editMenuItems"
-              @select="menuClick" :beforeOpen="arrangeMenuBeforeOpen" :beforeClose="arrangeMenuBeforeClose"
-              :beforeItemRender="beforeItemRender">
-              Edit
-            </ejs-dropdownbutton>
-          </div>
-          <div class="db-menu-style">
-            <ejs-dropdownbutton id="btnViewMenu" cssClass="db-dropdown-menu" :items="dropDownDataSources.viewMenuItems"
-              @select="menuClick" :beforeOpen="arrangeMenuBeforeOpen" :beforeClose="arrangeMenuBeforeClose"
-              :beforeItemRender="beforeItemRender">
-              View
-            </ejs-dropdownbutton>
-          </div>
-          <div class="db-menu-style">
-            <ejs-dropdownbutton id="btnArrangeMenu" cssClass="db-dropdown-menu"
-              :items="dropDownDataSources.arrangeMenuItems" @select="menuClick" :beforeOpen="arrangeMenuBeforeOpen"
-              :beforeClose="arrangeMenuBeforeClose" :beforeItemRender="beforeItemRender"
-              target='.e-contextmenu-wrapper.arrangeMenu'>
-              Arrange
-            </ejs-dropdownbutton>
-          </div>
-          <div class="db-menu-style">
-            <ejs-dropdownbutton id="btnWindowMenu" cssClass="db-dropdown-menu"
-              :items="dropDownDataSources.windowMenuItems" @select="menuClick" :beforeOpen="arrangeMenuBeforeOpen"
-              :beforeClose="arrangeMenuBeforeClose" :beforeItemRender="beforeItemRender">
-              Window
-            </ejs-dropdownbutton>
-          </div>
-          <div class="db-menu-style" style="display: none">
-            <ejs-dropdownbutton id="btnHelpMenu" cssClass="db-dropdown-menu" :items="dropDownDataSources.helpMenuItems"
-              @select="menuClick" :beforeItemRender="beforeItemRender">
-              Help
-            </ejs-dropdownbutton>
-          </div>
-        </div>
+        <div class="diagram-menu-control">
+            <div class="menu-control">
+                <ejs-menu id="diagram-menu"
+                ref="menuBar"
+                cssClass='db-dropdown-menu'  
+                content="Menu"
+                :items='dropDownDataSources.menuItems'
+                 @select="menuClick($event)"
+                :beforeOpen="beforeItemRender"
+                ></ejs-menu>
+             </div>
+         </div>
       </div>
 
       <div class='db-toolbar-editor'>
@@ -79,7 +47,7 @@
               <e-item cssClass="tb-item-end tb-zoom-dropdown-btn" :template="'toolbarTemplate'" align="Left"></e-item>
               <template v-slot:toolbarTemplate>
                 <div>
-                  <ejs-dropdownbutton :items="menuItems" @select="zoomChange($event)"
+                  <ejs-dropdownbutton id="btnZoomIncrement" :items="menuItems" @select="zoomChange($event)"
                     :content="selectedItem.scrollSettings.currentZoom"></ejs-dropdownbutton>
                 </div>
               </template>
@@ -592,7 +560,7 @@
               </div>
               <div class="row db-prop-row">
                 <div class="col-xs-6 db-col-left" id="textPositionDiv">
-                  <ejs-dropdownlist id="ddlTextPosition" index=0
+                  <ejs-dropdownlist id="ddlTextPosition" ref="ddlTextPositionRef" index=4
                     :dataSource="selectedItem.textProperties.textPositionDataSource"
                     :value="selectedItem.textProperties.textPosition" :fields="dropdownListFields"
                     v-on:change="diagramPropertyBinding.textPositionChange($event)"></ejs-dropdownlist>
@@ -655,7 +623,7 @@
                   </e-items>
                 </ejs-toolbar>
               </div>
-              <div class="row db-prop-row">
+              <div class="row db-prop-row" id="textOpacityProp">
                 <div class="col-xs-2 db-col-right db-prop-text-style" style="padding-top: 6px">
                   <span class="db-prop-text-style">Opacity</span>
                 </div>
@@ -1386,9 +1354,9 @@ import {
 } from "./app/scripts/events";
 
 import { DiagramComponent, SymbolPaletteComponent, BpmnDiagrams, SnapConstraints, SelectorConstraints, DiagramTools, UndoRedo, Overview, DiagramAction, PrintAndExport, DiagramContextMenu,
-        ComplexHierarchicalTree, HierarchicalTree, ConnectorConstraints, ConnectorEditing, ConnectorBridging, MindMapTree, Snapping, DataBinding, LayoutAnimation, Diagram, MindMap
+        ComplexHierarchicalTree, HierarchicalTree, ConnectorConstraints, ConnectorEditing, ConnectorBridging, Snapping, DataBinding, LayoutAnimation, Diagram, MindMap
  } from "@syncfusion/ej2-vue-diagrams";
-import { ContextMenuComponent, ToolbarComponent, ItemDirective, ItemsDirective } from '@syncfusion/ej2-vue-navigations';
+import { ContextMenuComponent, ToolbarComponent, ItemDirective, ItemsDirective, MenuComponent } from '@syncfusion/ej2-vue-navigations';
 import {
   BeforeOpenCloseMenuEventArgs,
   MenuEventArgs,
@@ -1396,7 +1364,7 @@ import {
 } from "@syncfusion/ej2-vue-splitbuttons";
 
 import { RadioButtonComponent, ButtonComponent } from "@syncfusion/ej2-vue-buttons";
-import { DropDownListComponent } from "@syncfusion/ej2-vue-dropdowns";
+import { DropDownListComponent, MultiSelectComponent } from "@syncfusion/ej2-vue-dropdowns";
 import { CheckBoxComponent } from "@syncfusion/ej2-vue-buttons";
 import { ColorPickerComponent } from "@syncfusion/ej2-vue-inputs";
 import { DialogComponent } from "@syncfusion/ej2-vue-popups";
@@ -1455,6 +1423,7 @@ export default defineComponent({
     "e-item": ItemDirective,
     "ejs-radiobutton": RadioButtonComponent,
     'ejs-dropdownlist': DropDownListComponent,
+    'ejs-multiselect': MultiSelectComponent,
     "ejs-checkbox": CheckBoxComponent,
     "ejs-colorpicker": ColorPickerComponent,
     "ejs-dialog": DialogComponent,
@@ -1462,7 +1431,8 @@ export default defineComponent({
     "ejs-numerictextbox": NumericTextBoxComponent,
     'ejs-slider': SliderComponent,
     "ejs-listview": ListViewComponent,
-    "ejs-button": ButtonComponent
+    "ejs-button": ButtonComponent,
+    "ejs-menu": MenuComponent
   },
   setup() {
     const selectedItem = reactive(new SelectorViewModel());
@@ -1473,6 +1443,7 @@ export default defineComponent({
     const instance = getCurrentInstance();
     const customTool = new CustomTool();
     const diagramThemes = new DiagramTheme(selectedItem);
+    const listViewFields = { isChecked: 'checked' };
     const getCustomTool = customTool.getTool.bind(instance.ctx)
     const menuItems = [
          { text: '400%' }, { text: '300%' }, { text: '200%' }, { text: '150%' },
@@ -1503,6 +1474,7 @@ export default defineComponent({
       verticalGridlines: gridlines,
       constraints: SnapConstraints.All & ~SnapConstraints.SnapToLines,
     };
+    const ddlTextPosition = ref();
     const dialogAnimationSettings = reactive({ effect: "None" });
     const pageSettings = reactive({
       background: { color: '#FFFFFF' },
@@ -1599,12 +1571,14 @@ export default defineComponent({
       getCustomTool,
       menuItems,
       drawShapeMenuItems,
+      listViewFields,
       drawConnectorMenuItems,
       ordermenuItems,
       themesdialogPosition,
       diagramThemes,
       path,
-      dropdownListFields
+      dropdownListFields,
+      ddlTextPosition,       
     };
   },
   mounted: function () {
@@ -1627,7 +1601,6 @@ export default defineComponent({
     moreShapesDialog = document.getElementById("moreShapesDialogContent");
     moreShapesList = document.getElementById("moreShapesList");
     symbolpalette = document.getElementById("symbolpalette");
-    ddlTextPosition = document.getElementById("ddlTextPosition");
     fileUploadDialog = document.getElementById("fileUploadDialog");
   },
   computed: {
@@ -1674,6 +1647,7 @@ export default defineComponent({
       this.page = page;
       diagramPropertyBinding = new DiagramPropertyBinding(this.selectedItem, this.page);
       this.diagramPropertyBinding = diagramPropertyBinding;
+      this.generateDiagram();
       this.page.addNewPage();
       this.defaultupload = defaultupload.ej2_instances[0];
       this.customPropertyDialog = customPropertyDialog.ej2_instances[0];
@@ -1688,7 +1662,10 @@ export default defineComponent({
       this.orgChartPropertyBinding = orgChartPropertyBinding;
       layerFooterTemplate = this.diagramLayer.getLayerBottomPanel();
       this.fileUploadDialog = fileUploadDialog.ej2_instances[0];
+      this.ddlTextPosition = this.$refs.ddlTextPositionRef.ej2Instances;
+      this.diagramEvents.ddlTextPosition = this.ddlTextPosition;
       OrgChartUtilityMethods.uploadDialog = this.fileUploadDialog
+      OrgChartUtilityMethods.customPropertyDialog = this.customPropertyDialog
       downloadFile = new DownloadExampleFiles(this.selectedItem);
       this.downloadFile  = downloadFile;
       (document.getElementById("btnHideToolbar")).onclick = this.hideMenuBar.bind(this);  
@@ -1898,24 +1875,49 @@ export default defineComponent({
       return shortCutKey;
     },
     // Determine and return the shortcut key for a given menu item.
-    beforeItemRender(args) {   
-      let shortCutText = this.getShortCutKey((args.item).text);
-      if (shortCutText) {
-        let shortCutSpan = createElement("span");
-        let text = args.item.text;
-        shortCutSpan.textContent = shortCutText;
-        shortCutSpan.style.pointerEvents = "none";
-        args.element.appendChild(shortCutSpan);
-        shortCutSpan.setAttribute("class", "db-shortcut");
-      }
-      let status = this.selectedItem.utilityMethods.enableMenuItems((args.item).text, this.selectedItem);
-      if (status) {
-        args.element.classList.add("e-disabled");
-      } else {
-        if (args.element.classList.contains("e-disabled")) {
-          args.element.classList.remove("e-disabled");
+    beforeItemRender(args) {
+      let parentItem = args.parentItem;
+      let shortCutText = this.getShortCutKey(parentItem.text);
+        if (shortCutText) {
+            let shortCutSpan = createElement('span');
+            let text = parentItem.text;
+            shortCutSpan.textContent = shortCutText;
+            shortCutSpan.style.pointerEvents = 'none';
+            args.element.appendChild(shortCutSpan);
+            shortCutSpan.setAttribute('class', 'db-shortcut');
         }
-      }
+        let status = this.selectedItem.utilityMethods.enableMenuItems(parentItem.text, this.selectedItem);
+        if (parentItem.items.length > 0) {
+          for (let i = 0; i < parentItem.items.length; i++) {
+            this.menuItemsArrange(args.element.childNodes[i],parentItem.items[i]);
+          }
+        }
+        if (status) {
+            args.element.classList.add('e-disabled');
+        } else {
+            if (args.element.classList.contains('e-disabled')) {
+                args.element.classList.remove('e-disabled');
+            }
+        }
+    },
+    menuItemsArrange(args,item) {
+      let shortCutText = this.getShortCutKey(item.text);
+        if (shortCutText) {
+            let shortCutSpan = createElement('span');
+            let text = item.text;
+            shortCutSpan.textContent = shortCutText;
+            shortCutSpan.style.pointerEvents = 'none';
+            args.appendChild(shortCutSpan);
+            shortCutSpan.setAttribute('class', 'db-shortcut');
+        }
+        let status = this.selectedItem.utilityMethods.enableMenuItems(item.text, this.selectedItem);
+        if (status) {
+            args.classList.add('e-disabled');
+        } else {
+            if (args.classList.contains('e-disabled')) {
+                args.classList.remove('e-disabled');
+            }
+        }
     },
     // Handle toolbar button clicks to perform diagram commands.
     toolbarEditorClick(args) {
@@ -2014,6 +2016,11 @@ export default defineComponent({
       (document.getElementById("btnDrawShape")).classList.remove("tb-item-selected");
       (document.getElementById("btnDrawConnector")).classList.remove("tb-item-selected");
     },
+    generateDiagram() {
+        this.selectedItem.selectedDiagram = this.$refs.diagram.ej2Instances;
+        this.selectedItem.diagramType = 'GeneralDiagram';
+        //this.diagram.layers[0].addInfo = { 'name': 'Layer0' };
+    },
     // Handle menu item clicks to perform file and view operations.
     menuClick(args) {
       let buttonElement = document.getElementsByClassName("e-btn-hover")[0];
@@ -2024,7 +2031,10 @@ export default defineComponent({
       let commandType = ((args.item).text.replace(/[" "]/g, ""));
       switch (commandType.toLowerCase()) {
         case "new":
-          CommonKeyboardCommands.newDiagram();
+          diagram.clear();
+          document.getElementById("diagramName").innerHTML = 'Untitled Diagram';
+          let zoomCurrentValue = document.getElementById("btnZoomIncrement").ej2_instances[0];
+          zoomCurrentValue.content = '100%';
           break;
         case "open":
           CommonKeyboardCommands.openUploadBox(true, ".json");
@@ -2041,16 +2051,6 @@ export default defineComponent({
           this.saveDialog.show();
           break;
         case "print":
-          this.selectedItem.printSettings.pageHeight =
-            this.selectedItem.pageSettings.pageHeight;
-          this.selectedItem.printSettings.pageWidth =
-            this.selectedItem.pageSettings.pageWidth;
-          this.selectedItem.printSettings.paperSize =
-            this.selectedItem.pageSettings.paperSize;
-          this.selectedItem.printSettings.isPortrait =
-            this.selectedItem.pageSettings.isPortrait;
-          this.selectedItem.printSettings.isLandscape =
-            !this.selectedItem.pageSettings.isPortrait;
           this.btnPrintClick()
           break;
         case "export":
@@ -2151,6 +2151,27 @@ export default defineComponent({
           node1.visible = !node1.visible;
           diagram.dataBind();
           break;
+        case 'left':
+        case 'right':
+        case 'top':
+        case 'bottom':
+        case 'middle':
+        case 'center':
+        case 'horizontally':
+        case 'vertically':
+        case 'width':
+        case 'height':
+        case 'bothwidthandheight':
+        case 'sendtoback':
+        case 'bringtofront':
+        case 'bringforward':
+        case 'sendbackward':
+        case 'lock':
+        case 'unlock':
+        case 'group':
+        case 'ungroup':
+          this.contextMenuClick(args);
+          break;
         default:
           this.executeEditMenu(diagram, commandType);
           break;
@@ -2224,8 +2245,8 @@ export default defineComponent({
     },
     // Toggle the visibility of the layers panel.
     showHideLayers() {
-      let btnWindow = document.getElementById("btnWindowMenu");
-      let iconCss = btnWindow.ej2_instances[0].items[3].iconCss;
+      let btnWindow = document.getElementById('diagram-menu').ej2_instances[0].items[4];
+      let iconCss = btnWindow.items[3].iconCss;
       if (!this.initLayerPanel) {
         this.diagramLayer.initLayerBottomPanel();
         this.initLayerPanel = true;
@@ -2236,18 +2257,18 @@ export default defineComponent({
         this.diagramLayer.getLayerDialogContent();
         this.layerDialog.show();
       }
-      btnWindow.ej2_instances[0].items[3].iconCss = iconCss ? "" : "sf-icon-Selection";
+      btnWindow.items[3].iconCss = iconCss ? '' : 'sf-icon-Selection';
     },
     // Toggle the visibility of the themes panel.
     showHideThemes() {
-      let btnWindow = document.getElementById("btnWindowMenu");
-      let iconCss = btnWindow.ej2_instances[0].items[5].iconCss;
+      let btnWindow = document.getElementById('diagram-menu').ej2_instances[0].items[4];
+      let iconCss = btnWindow.items[5].iconCss;
       if (iconCss) {
         this.themeDialog.hide();
       } else {
         this.themeDialog.show();
       }
-      btnWindow.ej2_instances[0].items[5].iconCss = iconCss ? "" : "sf-icon-Selection";
+      btnWindow.items[5].iconCss = iconCss ? "" : "sf-icon-Selection";
     },
     // Update the opacity of the selected node to the specified value.
     updateOpacity(newValue) {
@@ -2267,6 +2288,9 @@ export default defineComponent({
     group() {
       this.selectedItem.isModified = true;
       ((this.selectedItem).selectedDiagram).group();
+      let selectedItems = this.selectedItem.selectedDiagram.selectedItems.nodes;
+      selectedItems = selectedItems.concat(this.selectedItem.selectedDiagram.selectedItems.connectors);
+      this.selectedItem.utilityMethods.enableToolbarItems(selectedItems);
     },
     // Ungroup the selected elements in the diagram.
     ungroup() {
@@ -2531,31 +2555,12 @@ export default defineComponent({
     },
     // Called when the print button is clicked to configure and execute a print operation for the diagram.
     btnPrintClick() {
-      let pageWidth = this.selectedItem.printSettings.pageWidth;
-      let pageHeight = this.selectedItem.printSettings.pageHeight;
-      let paperSize = this.selectedItem.utilityMethods.getPaperSize(this.selectedItem.printSettings.paperSize);
-      if (paperSize.pageHeight && paperSize.pageWidth) {
-        pageWidth = paperSize.pageWidth;
-        pageHeight = paperSize.pageHeight;
-      }
-      if (this.selectedItem.pageSettings.isPortrait) {
-        if (pageWidth > pageHeight) {
-          let temp = pageWidth;
-          pageWidth = pageHeight;
-          pageHeight = temp;
-        }
-      } else {
-        if (pageHeight > pageWidth) {
-          let temp = pageHeight;
-          pageHeight = pageWidth;
-          pageWidth = temp;
-        }
-      }
       let diagram = this.selectedItem.selectedDiagram;
       diagram.print({
-        region: this.selectedItem.printSettings.region, pageHeight: pageHeight, pageWidth: pageWidth,
-        multiplePage: !this.selectedItem.printSettings.multiplePage,
-        pageOrientation: this.selectedItem.printSettings.isPortrait ? "Portrait" : "Landscape"
+          region: 'PageSettings',
+          pageHeight: 1600, pageWidth: 1200,
+          multiplePage: false,
+          pageOrientation: 'Landscape'
       });
     },
     // Advances the file upload dialog to the next stage.
@@ -2674,29 +2679,34 @@ export default defineComponent({
         this.page.loadPage(((event.target)).result.toString());
         this.page.loadDiagramSettings();
         this.fileUploadDialog.hide();
-    },
-    // Handle a successful upload event to process uploaded files.
+  },
+  setImage(event) {
+        let node = this.selectedItem.selectedDiagram.selectedItems.nodes[0];
+        node.shape = { type: 'Image', source: event.target.result, align: 'None' };
+        this.selectedItem.selectedDiagram.dataBind();
+  },
+  // Handle a successful upload event to process uploaded files.
   onUploadSuccess(args) {
-        (document.getElementsByClassName("sb-content-overlay")[0]).style.display = "none";
-        if (args.operation !== "remove") {
-            let file1 = args.file;
-            let file = file1.rawFile;
-            OrgChartUtilityMethods.fileType = file1.type.toString();
-            let reader = new FileReader();
-            if (OrgChartUtilityMethods.fileType.toLowerCase() === "jpg" || OrgChartUtilityMethods.fileType.toLowerCase() === "png") {
-                reader.readAsDataURL(file);
-                reader.onloadend = this.setImage.bind(this);
-            } else {
-                reader.readAsText(file);
-                if (OrgChartUtilityMethods.fileType === "json" && CommonKeyboardCommands.isOpen) {
-                    reader.onloadend = this.loadDiagram.bind(this);
-                } else {
-                    OrgChartUtilityMethods.isUploadSuccess = true;
-                    reader.onloadend = OrgChartUtilityMethods.readFile.bind(OrgChartUtilityMethods);
-                }
-            }
-            CommonKeyboardCommands.isOpen = false;
-        }
+      (document.getElementsByClassName('sb-content-overlay')[0]).style.display = 'none';
+      if (args.operation !== 'remove') {
+          let file1= args.file;
+          let file = file1.rawFile;
+          OrgChartUtilityMethods.fileType = file1.type.toString();
+          let reader = new FileReader();
+          if (OrgChartUtilityMethods.fileType.toLowerCase() === 'jpg' || OrgChartUtilityMethods.fileType.toLowerCase() === 'png') {
+              reader.readAsDataURL(file);
+              reader.onloadend = this.setImage.bind(this);
+          } else {
+              reader.readAsText(file);
+              if (OrgChartUtilityMethods.fileType === 'json' && CommonKeyboardCommands.isOpen) {
+                  reader.onloadend = this.loadDiagram.bind(this);
+              } else {
+                  OrgChartUtilityMethods.isUploadSuccess = true;
+                  reader.onloadend = OrgChartUtilityMethods.readFile.bind(OrgChartUtilityMethods);
+              }
+          }
+          CommonKeyboardCommands.isOpen = false;
+      }
     },
     // Handle upload failures or errors during file processing.
     onUploadFailure(args) {
@@ -2866,8 +2876,8 @@ export default defineComponent({
     },
     //close theme dialog
     closeThemeDialog(args) {
-      let btnWindow = document.getElementById("btnWindowMenu");
-      btnWindow.ej2_instances[0].items[5].iconCss = "";
+      let btnWindow = document.getElementById('diagram-menu').ej2_instances[0].items[4];
+      btnWindow.items[5].iconCss = '';
     },
     //Create theme dialog
     themeDialogCreated(args) {
@@ -2891,10 +2901,49 @@ export default defineComponent({
 
   },
   provide: {
-    diagram: [Diagram, UndoRedo, BpmnDiagrams, PrintAndExport, DiagramContextMenu, HierarchicalTree, ComplexHierarchicalTree, ConnectorBridging, ConnectorEditing, MindMap, MindMapTree, Snapping, DataBinding, LayoutAnimation],
+    diagram: [Diagram, UndoRedo, BpmnDiagrams, PrintAndExport, DiagramContextMenu, HierarchicalTree, ComplexHierarchicalTree, ConnectorBridging, ConnectorEditing, MindMap, Snapping, DataBinding, LayoutAnimation],
     SymbolPalette: [BpmnDiagrams]
   }
 
 
 });
 </script>
+<style>
+  .e-split-btn-wrapper {
+    width: 100%;
+    height: 100%;
+    padding-left: 2px;
+  }
+  .db-text-container .e-btn {
+    padding: 0px;
+  }
+  .menu-control{
+    height: 38px;
+  }
+  .e-menu-wrapper .e-menu{
+    margin-top: -5px!important;
+    color: white !important;
+  }
+  .e-menu-wrapper ul .e-menu-item .e-caret, .e-menu-container ul .e-menu-item .e-caret {
+    visibility: collapse !important;
+  }
+  .diagram-menu-control {
+    text-align: left;
+  }  
+  #diagram-menu {
+    float: left;
+    margin-right: 0px;
+    background-color: #046AE5;
+    color:#ffffff;
+  }
+
+  #diagram-menu li {
+    transition: color 0.2s ease; /* Smooth transition for color change */
+  }
+
+  #diagram-menu li:hover {
+    color: #046AE5; /* Text turns blue when hovered over */
+    cursor: pointer; /* Changes cursor to hand pointer on hover */
+  }
+
+</style> 

@@ -440,6 +440,7 @@ export class UtilityMethods {
         } else if (target.id.startsWith('flowchart')) {
             if (target.id === 'flowchart_child0') {
                 (selectedItem.selectedDiagram as any).clear();
+                (selectedItem.selectedDiagram as any).layers[0].addInfo = { 'name': 'Layer0' };
             } else if (target.id === 'flowchart_child1') {
                 this.readTextFile('./assets/dbstyle/flowchart_Images/CreditCardFlow.json', selectedItem);
             } else if (target.id === 'flowchart_child2') {
@@ -462,11 +463,11 @@ export class UtilityMethods {
     }
 
     private hideMenuItems(): void {
-        let btnWindow: any = document.getElementById('btnWindowMenu');
-        btnWindow.ej2_instances[0].items[1].iconCss = '';
+        let btnWindow: any = (document.getElementById('diagram-menu') as any).ej2_instances[0].items[4];
+        btnWindow.items[1].iconCss = '';
 
-        let btnView: any = document.getElementById('btnViewMenu');
-        btnView.ej2_instances[0].items[7].iconCss = '';
+        let btnView: any = (document.getElementById('diagram-menu') as any).ej2_instances[0].items[2]
+        btnView.items[7].iconCss = '';
     }
     public currentDiagramVisibility(diagramname: string, selectedItem: SelectorViewModel): void {
         if (diagramname === 'mindmap-diagram' || diagramname === 'orgchart-diagram') {
@@ -520,9 +521,9 @@ export class UtilityMethods {
             if (selectedItems[0] instanceof Node) {
                 if ((selectedItems[0] as Node).children) {
                     if ((selectedItems[0] as Node).children.length > 2) {
-                        toolbarContainer.className = toolbarContainer.className + ' db-select db-double db-multiple db-node db-group';
+                        toolbarContainer.className = toolbarContainer.className + ' db-select db-multiple db-node db-group';
                     } else {
-                        toolbarContainer.className = toolbarContainer.className + ' db-select db-double db-node db-group' ;
+                        toolbarContainer.className = toolbarContainer.className + ' db-select db-node db-group' ;
                     }
                 } else {
                     toolbarContainer.className = toolbarContainer.className + ' db-select db-node';
@@ -545,15 +546,15 @@ export class UtilityMethods {
     }
 
     public enableMenuItems(itemText: string, selectedItem: SelectorViewModel): boolean {
-        let selectedItems: Object[] | undefined = selectedItem.selectedDiagram.selectedItems.nodes;
-        selectedItems = (selectedItems as any).concat(selectedItem.selectedDiagram.selectedItems.connectors);
+        let selectedItems: any[] = (selectedItem.selectedDiagram.selectedItems.nodes as any);
+        selectedItems = selectedItems.concat(selectedItem.selectedDiagram.selectedItems.connectors);
         if (itemText) {
             let commandType: string = itemText.replace(/[' ']/g, '');
-            if ((selectedItems as any).length === 0 || selectedItem.diagramType !== 'GeneralDiagram') {
+            if (selectedItems.length === 0 || selectedItem.diagramType !== 'GeneralDiagram') {
                 switch (commandType.toLowerCase()) {
                     case 'edittooltip':
                         let disable: boolean = false;
-                        if (!((selectedItems as any).length === 1)) {
+                        if (!(selectedItems.length === 1)) {
                             disable = true;
                         }
                         return disable;
@@ -567,7 +568,7 @@ export class UtilityMethods {
                         return true;
                 }
             }
-            if ((selectedItems as any).length > 1) {
+            if (selectedItems.length > 1) {
                 switch (commandType.toLowerCase()) {
                     case 'edittooltip':
                         return true;
@@ -583,20 +584,50 @@ export class UtilityMethods {
                 return true;
             }
             if (itemText === 'Select All') {
-                if (selectedItem.diagramType !== 'GeneralDiagram' || ((selectedItem.selectedDiagram as any).nodes.length === 0 && (selectedItem.selectedDiagram as any).connectors.length === 0)) {
+                if (selectedItem.diagramType !== 'GeneralDiagram' || (selectedItem.selectedDiagram.nodes.length === 0 && selectedItem.selectedDiagram.connectors.length === 0)) {
+                    return true;
+                }
+            }
+            if (itemText ==='Align Objects'|| itemText === 'Distribute Objects'|| itemText === 'Match Size'|| itemText === 'Group') {
+                if (selectedItems.length < 2) {
+                    return true;
+                }
+            }
+            if (itemText ==='Bring To Front'|| itemText === 'Send To Back'|| itemText === 'Bring Forward'|| itemText === 'Send Backward') {
+                if (selectedItems.length !== 1) {
+                    return true;
+                }
+            }
+            if (itemText ==='Lock'|| itemText === 'Unlock') {
+                if (selectedItems.length < 1) {
+                    return true;
+                } else {
+                    if (itemText === 'Lock') {
+                        for (let i = 0; i < selectedItems.length; i++) {
+                            if ((selectedItems[i] as any).constraints !== NodeConstraints.Default) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < selectedItems.length; i++) {
+                            if ((selectedItems[i] as any).constraints === NodeConstraints.Default) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (itemText === 'Ungroup') {
+                if (selectedItems.length !== 1 || !(selectedItems[0] instanceof Node) || !selectedItems[0].children || selectedItems[0].children.length === 0) {
                     return true;
                 }
             }
             if (selectedItem.diagramType !== 'GeneralDiagram') {
-                if (itemText === 'Themes' || itemText === 'Paste' || itemText === 'Show Rulers' || itemText === 'Show Guides'
-                    || itemText === 'Show Grid' || itemText === 'Snap To Grid' || itemText === 'Show Stencil') {
+                if (itemText === 'Themes' || itemText ==='Paste'|| itemText === 'Show Rulers'|| itemText === 'Show Guides'|| itemText === 'Show Grid'
+                    || itemText === 'Snap To Grid'|| itemText === 'Show Stencil'|| itemText ==='Align Objects'|| itemText === 'Distribute Objects'|| itemText === 'Match Size'|| itemText === 'Group'
+                    || itemText === 'Bring To Front'|| itemText === 'Send To Back'|| itemText === 'Bring Forward'|| itemText === 'Send Backward'|| itemText ==='Lock'|| itemText === 'Unlock'|| itemText ==='Ungroup') {
                     return true;
-                }
-            }
-            if(selectedItem.diagramType !== 'MindMap') {
-                if (itemText === 'Show Shortcuts') {
-                    return true;
-                }
+                } 
             }
         }
         return false;
@@ -798,7 +829,7 @@ export class UtilityMethods {
                     node.minWidth = 150; node.minHeight = 50; node.maxHeight = 50;
                     (selectedItem.selectedDiagram as any).dataBind();
                     node.shape = { type: 'Basic', shape: 'Rectangle', cornerRadius: 5 };
-                    (selectedItem.selectedDiagram as any).dataBind();
+                    (selectedItem.selectedDiagram as any).refresh();
                 } else if (imageField) {
                     node.minWidth = 300; node.minHeight = 100; node.maxHeight = 100;
                     (selectedItem.selectedDiagram as any).dataBind();
@@ -806,7 +837,7 @@ export class UtilityMethods {
                         type: 'Image', source: nodeInfo[propName] && nodeInfo[propName].value ? nodeInfo[propName].value.toString() : './assets/dbstyle/orgchart_images/blank-male.jpg',
                         align: 'XMinYMin', scale: 'Meet'
                     };
-                    (selectedItem.selectedDiagram as any).dataBind();
+                    (selectedItem.selectedDiagram as any).refresh();
                 }
                 let annotations: ShapeAnnotationModel[] = [];
                 let startY: number = 0.5 - ((bindingFields.length - 1) / 10);

@@ -80,11 +80,14 @@ export class DiagramBuilderLayer {
         let layers: LayerModel[] = this.getLayers();
         for (let i: number = 0; i < layers.length; i++) {
             let layer: LayerModel = layers[i];
+            let visibleElement: HTMLButtonElement = visibleElements[layers.length - i];
+            if (visibleElement && visibleElement.childNodes.length > 0) {
+                visibleElement.childNodes[0].remove();
+            }
             let visibleLayer: Button = new Button({
                 iconCss: layer.visible ? 'sf-icon-View' : 'sf-icon-Invisible',
                 cssClass: layer.id
             });
-            let visibleElement: HTMLButtonElement = visibleElements[layers.length - i];
             visibleElement.title = layer.visible ? 'Visible' : 'Invisible';
             visibleLayer.appendTo(visibleElement);
             visibleElement.onclick = this.changeLayerVisibility.bind(this);
@@ -93,6 +96,9 @@ export class DiagramBuilderLayer {
             }
 
             let lockElement: HTMLButtonElement = lockElements[layers.length - i];
+            if (lockElement && lockElement.childNodes.length > 0) {
+                lockElement.childNodes[0].remove();
+            }
             let lockLayer: Button = new Button({
                 iconCss: layer.lock ? 'sf-icon-Lock' : 'sf-icon-Unlock',
                 cssClass: layer.id,
@@ -249,8 +255,8 @@ export class DiagramBuilderLayer {
 
     public btnCloseDialog(): void {
         this.layerDialog.hide();
-        let btnWindow: any = document.getElementById('btnWindowMenu');
-        btnWindow.ej2_instances[0].items[3].iconCss = '';
+        let btnWindow: any = (document.getElementById('diagram-menu') as any).ej2_instances[0].items[4];
+        btnWindow.items[3].iconCss = '';
     }
 
     // public btnSelectionLayer(): void {
@@ -286,11 +292,11 @@ export class DiagramBuilderLayer {
         this.layerCount1++;
     }
 
-    public getActiveLayer(layer: LayerModel): LayerModel {
-        if (layer.id === (this.selectedItem as any).selectedDiagram.activeLayer.id) {
+    public getActiveLayer(layer: LayerModel): any {
+        if (layer.id === this.selectedItem.selectedDiagram.activeLayer.id) {
             return layer;
         }
-        return {};
+        return null;
     }
 
     public findLayer(layerName: string): LayerModel {

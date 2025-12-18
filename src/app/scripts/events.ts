@@ -28,62 +28,62 @@ export class DiagramClientSideEvents {
     }
 
     public selectionChange(args: ISelectionChangeEventArgs): void {
-        let diagram: Diagram = (this.selectedItem as any).selectedDiagram;
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
         if (this.selectedItem.preventSelectionChange || this.selectedItem.isLoading) {
             return;
         }
-        if (args.state === "Changed") {
-            if (this.selectedItem.diagramType === "MindMap") {
-                if (args.newValue.length === 1 && (diagram as any).selectedItems.nodes.length === 1) {
+        if (args.state === 'Changed') {
+            if (this.selectedItem.diagramType === 'MindMap') {
+                if (args.newValue.length === 1 && (diagram.selectedItems as any).nodes.length === 1) {
                     let node: Node = args.newValue[0] as Node;
-                    (diagram as any).selectedItems.userHandles[0].visible = false;
-                    (diagram as any).selectedItems.userHandles[1].visible = false;
-                    (diagram as any).selectedItems.userHandles[2].visible = false;
-                    if (node.id !== "textNode" && !(node instanceof Connector)) {
+                    (diagram.selectedItems as any).userHandles[0].visible = false;
+                    (diagram.selectedItems as any).userHandles[1].visible = false;
+                    (diagram.selectedItems as any).userHandles[2].visible = false;
+                    if (node.id !== 'textNode' && !(node instanceof Connector)) {
                         let addInfo: { [key: string]: Object } = node.addInfo as { [key: string]: Object };
-                        if (node.id === "rootNode") {
-                            (diagram as any).selectedItems.userHandles[0].visible = true;
-                            (diagram as any).selectedItems.userHandles[1].visible = true;
-                        } else if (addInfo.orientation.toString() === "Left") {
-                            (diagram as any).selectedItems.userHandles[0].visible = true;
-                            (diagram as any).selectedItems.userHandles[2].visible = true;
-                            (diagram as any).selectedItems.userHandles[2].side = "Left";
+                        if (node.id === 'rootNode') {
+                            (diagram.selectedItems as any).userHandles[0].visible = true;
+                            (diagram.selectedItems as any).userHandles[1].visible = true;
+                        } else if (addInfo.orientation.toString() === 'Left') {
+                            (diagram.selectedItems as any).userHandles[0].visible = true;
+                            (diagram.selectedItems as any).userHandles[2].visible = true;
+                            (diagram.selectedItems as any).userHandles[2].side = 'Left';
                         } else {
-                            (diagram as any).selectedItems.userHandles[1].visible = true;
-                            (diagram as any).selectedItems.userHandles[2].visible = true;
-                            (diagram as any).selectedItems.userHandles[2].side = "Right";
+                            (diagram.selectedItems as any).userHandles[1].visible = true;
+                            (diagram.selectedItems as any).userHandles[2].visible = true;
+                            (diagram.selectedItems as any).userHandles[2].side = 'Right';
                         }
                         this.selectedItem.utilityMethods.bindMindMapProperties(node, this.selectedItem);
                     }
                     if (node.addInfo && (node.addInfo as { [key: string]: Object }).level !== undefined) {
-                        this.selectedItem.mindmapSettings.levelType = "Level" + (node.addInfo as { [key: string]: Object }).level;
+                        this.selectedItem.mindmapSettings.levelType = 'Level' + (node.addInfo as { [key: string]: Object }).level;
                     }
                 }
-            } else if (this.selectedItem.diagramType === "OrgChart") {
+            } else if (this.selectedItem.diagramType === 'OrgChart') {
                 if (args.newValue.length === 1) {
                     let node: any = args.newValue[0];
-                    (diagram as any).selectedItems.userHandles[0].visible = false;
-                    (diagram as any).selectedItems.userHandles[1].visible = false;
-                    (diagram as any).selectedItems.userHandles[2].visible = false;
-                    if (node.id !== "textNode" && node instanceof Node) {
-                        (diagram as any).selectedItems.userHandles[0].visible = true;
-                        (diagram as any).selectedItems.userHandles[1].visible = true;
-                        (diagram as any).selectedItems.userHandles[2].visible = true;
+                    (diagram.selectedItems as any).userHandles[0].visible = false;
+                    (diagram.selectedItems as any).userHandles[1].visible = false;
+                    (diagram.selectedItems as any).userHandles[2].visible = false;
+                    if (node.id !== 'textNode' && node instanceof Node) {
+                        (diagram.selectedItems as any).userHandles[0].visible = true;
+                        (diagram.selectedItems as any).userHandles[1].visible = true;
+                        (diagram.selectedItems as any).userHandles[2].visible = true;
                     }
                 }
             } else {
-                let selectedItems: Object[] = (this.selectedItem as any).selectedDiagram.selectedItems.nodes;
-                selectedItems = selectedItems.concat((this.selectedItem as any).selectedDiagram.selectedItems.connectors);
+                let selectedItems: Object[] = (this.selectedItem.selectedDiagram.selectedItems.nodes as any);
+                selectedItems = selectedItems.concat(this.selectedItem.selectedDiagram.selectedItems.connectors as any);
                 this.selectedItem.utilityMethods.enableToolbarItems(selectedItems);
-                let nodeContainer: HTMLElement | null = document.getElementById("nodePropertyContainer");
-                (nodeContainer as HTMLElement).classList.remove("multiple");
-                (nodeContainer as HTMLElement).classList.remove("connector");
+                let nodeContainer: HTMLElement = (document.getElementById('nodePropertyContainer') as any);
+                nodeContainer.classList.remove('multiple');
+                nodeContainer.classList.remove('connector');
                 if (selectedItems.length > 1) {
                     this.multipleSelectionSettings(selectedItems);
                 } else if (selectedItems.length === 1) {
                     this.singleSelectionSettings(selectedItems[0]);
                 } else {
-                    this.selectedItem.utilityMethods.objectTypeChange("diagram");
+                    this.selectedItem.utilityMethods.objectTypeChange('diagram');
                 }
             }
         }
@@ -140,28 +140,36 @@ export class DiagramClientSideEvents {
     private singleSelectionSettings(selectedObject: Object): void {
         let object: Node | Connector  = undefined as unknown as Node;
         if (selectedObject instanceof Node) {
-            this.selectedItem.utilityMethods.objectTypeChange("node");
+            this.selectedItem.utilityMethods.objectTypeChange('node');
             object = selectedObject as Node;
             this.selectedItem.utilityMethods.bindNodeProperties(object, this.selectedItem);
         } else if (selectedObject instanceof Connector) {
-            this.selectedItem.utilityMethods.objectTypeChange("connector");
+            this.selectedItem.utilityMethods.objectTypeChange('connector');
             object = selectedObject as Connector;
             this.selectedItem.utilityMethods.bindConnectorProperties(object, this.selectedItem);
         }
-        if (object.shape && object.shape.type === "Text") {
-            (document.getElementById("textPropertyContainer") as any).style.display = "";
-            (document.getElementById("toolbarTextAlignmentDiv") as any).style.display = "none";
-            (document.getElementById("textPositionDiv") as any).style.display = "none";
-            (document.getElementById("textColorDiv") as any).className = "col-xs-6 db-col-left";
+        if (object.shape && object.shape.type === 'Text') {
+            (document.getElementById('textPropertyContainer') as any).style.display = '';
+            (document.getElementById('toolbarTextAlignmentDiv') as any).style.display = 'none';
+            (document.getElementById('textPositionDiv') as any).style.display = 'none';
+            (document.getElementById('textColorDiv') as any).className = 'col-xs-6 db-col-left';
+            const opacitySlider: any = document.getElementById('textOpacityProp');
+            if (opacitySlider) {
+                opacitySlider.style.visibility = 'hidden';
+            }
             this.selectedItem.utilityMethods.bindTextProperties(object.style, this.selectedItem);
         } else if (object.annotations.length > 0 && object.annotations[0].content) {
-            (document.getElementById("textPropertyContainer") as any).style.display = "";
+            (document.getElementById('textPropertyContainer') as any).style.display = '';
             let annotation: ShapeAnnotation | PathAnnotation;
-            (document.getElementById("toolbarTextAlignmentDiv") as any).style.display = "";
-            (document.getElementById("textPositionDiv") as any).style.display = "";
-            (document.getElementById("textColorDiv") as any).className = "col-xs-6 db-col-right";
-            this.selectedItem.utilityMethods.bindTextProperties((object as any).annotations[0].style, this.selectedItem);
-            this.selectedItem.utilityMethods.updateHorVertAlign((object as any).annotations[0].horizontalAlignment, (object as any).annotations[0].verticalAlignment);
+            (document.getElementById('toolbarTextAlignmentDiv') as any).style.display = '';
+            (document.getElementById('textPositionDiv') as any).style.display = '';
+            (document.getElementById('textColorDiv') as any).className = 'col-xs-6 db-col-right';
+            const opacitySlider: any = document.getElementById('textOpacityProp');
+            if (opacitySlider) {
+                opacitySlider.style.visibility = 'hidden';
+            }
+            this.selectedItem.utilityMethods.bindTextProperties((object.annotations[0] as any).style, this.selectedItem);
+            this.selectedItem.utilityMethods.updateHorVertAlign((object.annotations[0] as any).horizontalAlignment, (object.annotations[0] as any).verticalAlignment);
             if (object.annotations[0] instanceof ShapeAnnotation) {
                 annotation = object.annotations[0] as ShapeAnnotation;
                 (this.ddlTextPosition as any).dataSource = this.selectedItem.textProperties.getNodeTextPositions();
@@ -209,7 +217,7 @@ export class DiagramClientSideEvents {
     };
 
     public scrollChange(args: IScrollChangeEventArgs): void {
-        // this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
+        this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
     }
 
     public nodeRotationChange(args: IRotationEventArgs): void {

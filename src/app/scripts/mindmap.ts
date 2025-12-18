@@ -380,7 +380,6 @@ export class MindMap {
             (diagram as any).pageSettings = { width: null, height:null };
             diagram.selectedItems = { userHandles: MindMapUtilityMethods.handle, constraints: SelectorConstraints.UserHandle };
             diagram.commandManager = this.getCommandSettings();
-            //diagram.tool = DiagramTools.SingleSelect | DiagramTools.ZoomPan;
             diagram.snapSettings.constraints = (diagram.snapSettings as any).constraints & ~SnapConstraints.ShowLines;
             diagram.constraints = diagram.constraints | DiagramConstraints.UndoRedo;
             diagram.tool = DiagramTools.SingleSelect | DiagramTools.ZoomPan;

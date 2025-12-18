@@ -134,81 +134,58 @@ export class PageCreation {
     }
   }
   public loadDiagramSettings(): void {
-    const diagram: Diagram | undefined = this.selectedItem.selectedDiagram;
-    document.getElementsByClassName("sidebar")[0].className =
-      "sidebar show-overview";
-    this.selectedItem.isLoading = true;
-    (diagram as any).loadDiagram(
-      JSON.stringify((this.activePage as any).diagram)
-    );
-    (diagram as any).clearSelection();
-    this.selectedItem.isLoading = false;
-    document.getElementsByClassName("sidebar")[0].className = "sidebar";
-    if (this.selectedItem.diagramType === "MindMap") {
-      MindMapUtilityMethods.templateType = (
-        this.activePage as any
-      ).mindmapTemplateType;
-      if (!this.pageSwitch && !this.selectedItem.isTemplateLoad) {
-        MindMapUtilityMethods.selectedItem = this.selectedItem;
-        const map: MindMap = new MindMap(this.selectedItem);
-        map.createMindMap(false);
-      }
-      const closeIconDiv: HTMLElement = (
-        document.getElementById("diagram") as any
-      ).querySelector("#closeIconDiv  ") as HTMLElement;
-      if (closeIconDiv) {
-        closeIconDiv.onclick = MindMapUtilityMethods.onHideNodeClick.bind(
-          MindMapUtilityMethods
-        );
-      }
-    }
-    if (this.selectedItem.diagramType === "OrgChart") {
-      if (!this.pageSwitch && !this.selectedItem.isTemplateLoad) {
-        OrgChartUtilityMethods.selectedItem = this.selectedItem;
-        const org: OrgChartData = new OrgChartData(this.selectedItem);
-        org.createOrgChart(false);
-      }
-      const closeIconDiv: HTMLElement = (
-        document.getElementById("diagram") as any
-      ).querySelector("#closeIconDiv") as HTMLElement;
-      if (closeIconDiv) {
-        closeIconDiv.onclick = OrgChartUtilityMethods.onHideNodeClick.bind(
-          OrgChartUtilityMethods
-        );
-      }
-    }
-    let btnView: any = document.getElementById("btnViewMenu");
-    btnView = btnView.ej2_instances[0];
-    if ((diagram as any).rulerSettings) {
-      btnView.items[5].iconCss = (diagram as any).rulerSettings.showRulers
-        ? "sf-icon-Selection"
-        : " ";
-      const containerDiv: HTMLElement | null = document.getElementById(
-        "diagramContainerDiv"
-      );
-      if (!(diagram as any).rulerSettings.showRulers) {
-        (containerDiv as any).classList.remove("db-show-ruler");
-      } else {
-        if (!(containerDiv as any).classList.contains("db-show-ruler")) {
-          (containerDiv as any).classList.add("db-show-ruler");
+        let diagram: Diagram = this.selectedItem.selectedDiagram;
+        document.getElementsByClassName('sidebar')[0].className = 'sidebar show-overview';
+        this.selectedItem.isLoading = true;
+        diagram.loadDiagram(JSON.stringify((this.activePage as any).diagram));
+        diagram.clearSelection();
+        diagram.refresh();
+        if (this.selectedItem.diagramType !== "GeneralDiagram" && this.selectedItem.diagramType !== 'OrgChart') {
+            diagram.fitToPage();
         }
-      }
+        this.selectedItem.isLoading = false;
+        document.getElementsByClassName('sidebar')[0].className = 'sidebar';
+        if (this.selectedItem.diagramType === 'MindMap') {
+            MindMapUtilityMethods.templateType = (this.activePage as any).mindmapTemplateType;
+            if (!this.pageSwitch && !this.selectedItem.isTemplateLoad) {
+                MindMapUtilityMethods.selectedItem = this.selectedItem;
+                let map: MindMap = new MindMap(this.selectedItem);
+                map.createMindMap(false);
+            }
+            let closeIconDiv: HTMLElement = ((document.getElementById('diagram') as any).querySelector('#closeIconDiv') as HTMLElement);
+            if (closeIconDiv) {
+                closeIconDiv.onclick = MindMapUtilityMethods.onHideNodeClick.bind(MindMapUtilityMethods);
+            }
+        }
+        if (this.selectedItem.diagramType === 'OrgChart') {
+            if (!this.pageSwitch && !this.selectedItem.isTemplateLoad) {
+                OrgChartUtilityMethods.selectedItem = this.selectedItem;
+                let org: OrgChartData = new OrgChartData(this.selectedItem);
+                org.createOrgChart(false);
+            }
+            let closeIconDiv: HTMLElement = ((document.getElementById('diagram') as any).querySelector('#closeIconDiv') as HTMLElement);
+            if (closeIconDiv) {
+                closeIconDiv.onclick = OrgChartUtilityMethods.onHideNodeClick.bind(OrgChartUtilityMethods);
+            }
+        }
+        let btnView: any = (document.getElementById('diagram-menu') as any).ej2_instances[0].items[2];
+        if (diagram.rulerSettings) {
+            btnView.items[5].iconCss = diagram.rulerSettings.showRulers ? 'sf-icon-Selection' : '';
+            let containerDiv: HTMLElement = (document.getElementById('diagramContainerDiv') as any);
+            if (!diagram.rulerSettings.showRulers) {
+                containerDiv.classList.remove('db-show-ruler');
+            } else {
+                if (!containerDiv.classList.contains('db-show-ruler')) {
+                    containerDiv.classList.add('db-show-ruler');
+                }
+            }
+        }
+        if (diagram.snapSettings) {
+            btnView.items[6].iconCss = ((diagram.snapSettings as any).constraints & SnapConstraints.SnapToObject) ? 'sf-icon-Selection' : '';
+            btnView.items[7].iconCss = ((diagram.snapSettings as any).constraints & SnapConstraints.ShowLines) ? 'sf-icon-Selection' : '';
+            btnView.items[9].iconCss = ((diagram.snapSettings as any).constraints & SnapConstraints.SnapToLines) ? 'sf-icon-Selection' : '';
+        }
     }
-    if ((diagram as any).snapSettings) {
-      btnView.items[6].iconCss =
-        (diagram as any).snapSettings.constraints & SnapConstraints.SnapToObject
-          ? "sf-icon-Selection"
-          : "  ";
-      btnView.items[7].iconCss =
-        (diagram as any).snapSettings.constraints & SnapConstraints.ShowLines
-          ? "sf-icon-Selection"
-          : "  ";
-      btnView.items[9].iconCss =
-        (diagram as any).snapSettings.constraints & SnapConstraints.SnapToLines
-          ? "sf-icon-Selection"
-          : "  ";
-    }
-  }
   public loadJson(): void {
     if (!this.selectedItem.uniqueId) {
       this.selectedItem.uniqueId = this.selectedItem.randomIdGenerator();

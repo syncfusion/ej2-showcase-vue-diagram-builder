@@ -99,12 +99,14 @@ export class CustomProperties {
 
     private removeField(args: ChangeEventArgs): void {
         let target: HTMLInputElement = (args.event as any).target as HTMLInputElement;
-        let className: string = (target.parentElement as any).parentElement.className.replace('e-checkbox-wrapper ', '').trim();
+        let className: string = (target.parentElement as any).parentElement.className.replace("e-checkbox-wrapper e-wrapper", "").trim();
         for (let i: number = 0; i < (this.selectedItem as any).selectedDiagram.nodes.length; i++) {
             let node: Node =(this.selectedItem as any).selectedDiagram.nodes[i] as Node;
             if (node.id !== 'textNode') {
                 let nodeInfo: any = node.addInfo;
-                nodeInfo[className].checked = args.checked;
+                if (nodeInfo[className]) {
+                    nodeInfo[className].checked = args.checked;
+                }
             }
         }
         let imageField: boolean = false;
